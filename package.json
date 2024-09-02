@@ -9,9 +9,18 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "chart.js": "^4.4.4",
+    "daisyui": "^4.12.10",
+    "firebase": "^10.13.1",
+    "fireorm": "^0.23.3",
+    "jose": "^5.8.0",
+    "jsonwebtoken": "^9.0.2",
+    "next": "14.2.7",
+    "nextjs-toploader": "^3.6.15",
     "react": "^18",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18",
-    "next": "14.2.7"
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "typescript": "^5",
