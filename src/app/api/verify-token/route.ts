@@ -3,7 +3,7 @@ import { secret_key } from '@config/environment'
 import jwt from 'jsonwebtoken'
 import { NextResponse, NextRequest } from 'next/server'
 
-const verifyToken = (token : string, secret_key : string) : Promise<Any> => {
+const verifyToken = (token : string, secret_key : string) : Promise<any> => {
     return new Promise((res, rej) => {
         jwt.verify(token, secret_key, (err : any, dec : any) => {
             if (err){
