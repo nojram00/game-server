@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { realtimeDb } from "@config/firebase.config";
 import { ref, set, onValue, push, get } from "firebase/database";
+import { User } from "@main/types/types";
 
 export async function GET(request : NextRequest){
 
