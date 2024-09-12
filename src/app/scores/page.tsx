@@ -2,7 +2,8 @@ import Navbar from '@main/components/navbar'
 import Main from '@main/components/scores/Main'
 import Sidebar from '@main/components/sidebar'
 import Table from '@main/components/table'
-import { User, UserModel } from '@main/types/types'
+import StudentModel from '@main/models/student'
+import { Student } from '@main/types/types'
 import React from 'react'
 
 export default async function scores() {
@@ -12,21 +13,22 @@ export default async function scores() {
   ]
 
   const get_data = async () => {
-    const users = await UserModel.retrieveAll()
+    const students = await StudentModel.getAll()
 
 
     let data : any = []
-    if(users){
-      const students : Array<User> | any = users.filter((s : any) => s.role === 1)
+
+    if(students){
+
 
       if (students.length <= 0){
         return []
       }
 
-      students.forEach((student : User) => {
-        console.log(student)
+      students.forEach((student : Student) => {
+
         data.push({
-          id : student.userId,
+          id : student.studentId,
           name : student.name,
           username : student.username,
           pre_test_score : student.score?.pre_test,

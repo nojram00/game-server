@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { realtimeDb } from "@config/firebase.config";
 import { ref, set, onValue, push } from "firebase/database";
 import { randomInt } from "crypto";
+import { Teacher } from "@main/types/types";
+import { TeacherModel } from "@main/models/teacher";
 
 export async function GET(request : NextRequest){
 
@@ -28,16 +30,13 @@ export async function GET(request : NextRequest){
 
 export async function POST(request : NextRequest){
 
-    const request_body = await request.json()
-    const userRef = ref(realtimeDb, 'users')
-    const newRef = push(userRef)
-    set(newRef, {
-        username : request_body.username,
-        password : request_body.password
-    })
+    const request_body = await request.json() as Teacher
+    const teacherData = new TeacherModel(request_body)
+
+    const res = await teacherData.save()
 
     return NextResponse.json({
         message: "User Created!",
-        userId : newRef.key
+        userId : teacherData.teacher.userId
     })
 }

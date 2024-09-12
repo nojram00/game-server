@@ -1,30 +1,34 @@
-import { User, UserModel } from "@main/types/types"
+import StudentModel from "@main/models/student"
+import { Score } from "@main/types/types"
 import { NextRequest, NextResponse } from "next/server"
 
 interface Params {
     studentId : string
 }
-export async function POST(req : NextRequest, {params} : { params : Params }) {
+export async function PATCH(req : NextRequest, {params} : { params : Params }) {
     const studentId = params.studentId
 
-    const { pre_test, post_test } = await req.json()
+    const requestBody = await req.json() as Score
 
-    const status = await UserModel.updateScore(studentId, {
-        pre_test : pre_test,
-        post_test : post_test
-    })
+    const data = await StudentModel.find(params.studentId)
 
-    if (status){
-        const userData : User | null = await UserModel.find(studentId)
-        return NextResponse.json({
-            message : "Score Updated!",
-            data : (userData !== null ? userData : {})
-        })
+
+    // console.log(data?.student)
+    if (data){
+        const res = await data.updateScore(requestBody)
+
+        // console.log(res) // null
+
+        if (res){
+            return NextResponse.json({
+                message : "Score Updated!",
+                data : res
+            })
+        }
     }
 
-    else{
-        return NextResponse.json({
+
+    return NextResponse.json({
             message : "Score fail to update...",
-        })
-    }
+        }, { status : 500 })
 }

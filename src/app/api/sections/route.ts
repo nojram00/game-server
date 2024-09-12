@@ -1,11 +1,10 @@
-import { realtimeDb } from "@main/config/firebase.config";
-import { SectionModel, Section } from "@main/types/types";
-import { push, ref, set } from "firebase/database";
+import SectionModel from "@main/models/sections";
+import { Section } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(){
-    const sections = await SectionModel.retrieveAll()
+    const sections = await SectionModel.getAll()
 
     if(sections){
         return NextResponse.json({
@@ -22,17 +21,22 @@ export async function GET(){
 // Create new section entry
 export async function POST(req : NextRequest) {
 
-    const req_body = await req.json()
+    const req_body = await req.json() as Section
 
-    console.log(req_body.sectionName)
-    const newSection = new SectionModel(req_body.sectionName, req_body.teacher, [])
+    const newSection = new SectionModel(req_body)
 
     const data = await newSection.save()
 
+    if (data){
+        return NextResponse.json({
+            message: "Section Added",
+            data: data
+        })
+    }
+
     return NextResponse.json({
-        message: "Section Added",
-        data: data
-    })
+        message: "Internal Server Error!",
+    }, { status : 500 })
 }
 
 interface Params{

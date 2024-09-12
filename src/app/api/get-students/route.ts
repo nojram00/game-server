@@ -1,16 +1,14 @@
-import { realtimeDb } from "@main/config/firebase.config";
-import { UserModel, User } from "@main/types/types";
-import { equalTo, get, query, ref } from "firebase/database";
+import StudentModel from "@main/models/student";
+import { Student } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(req : NextRequest) {
     try
     {
-        const users = await UserModel.retrieveAll()
+        const students = await StudentModel.getAll()
 
-        if (users){
-            const students : Array<User> | any = users.filter((s : any) => s.role === 1)
+        if (students){
 
             if (students.length <= 0){
                 return NextResponse.json({
@@ -20,7 +18,7 @@ export async function GET(req : NextRequest) {
 
             return NextResponse.json({
                 data : students
-            })
+            }, { status : 200 })
         }
 
     }

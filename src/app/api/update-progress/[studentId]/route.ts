@@ -1,23 +1,21 @@
-import { UserModel } from "@main/types/types";
+import StudentModel from "@main/models/student";
+import { Progress } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req : NextRequest, { params } : { params : { studentId : string }}) {
     const studentId = params.studentId
 
-    const { quantum_mastery, ecology_mastery, momentum_mastery, tera_mastery } = await req.json()
+    const requestBody = await req.json() as Progress
 
-    const res = await UserModel.updateProgress(studentId, {
-        quantum_mastery : quantum_mastery,
-        ecology_mastery : ecology_mastery,
-        momentum_mastery : momentum_mastery,
-        tera_mastery : tera_mastery
-    })
+    const student = await StudentModel.find(studentId)
 
-    if (res) {
-        const student = await UserModel.find(studentId)
+    if (student) {
+
+        const res = student.UpdateProgress(requestBody)
+
         return NextResponse.json({
             message : "Student Mastery Updated!",
-            data : student
-        })
+            data : res
+        }, { status : 200 })
     }
 }

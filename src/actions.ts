@@ -10,13 +10,15 @@ import { secret_key } from "./config/environment";
 import { request } from "http";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
+import { Teacher } from "./types/types";
+import { TeacherModel } from "./models/teacher";
 
 export async function signin(formdata: FormData){
     try
     {
         const username = formdata.get('username');
         const password = formdata.get('password');
-        const userRef = ref(realtimeDb, 'users/');
+        const userRef = ref(realtimeDb, 'teachers');
 
         const snapshot = await get(userRef)
 
@@ -29,21 +31,21 @@ export async function signin(formdata: FormData){
                 })
             });
 
-            const user = users.find((u : any) => {
+            const user : Teacher = users.find((u : any) => {
                 return u.username === username && u.password === password
             })
 
             if (user) {
 
-                if (user.role === 1){
-                    redirect('/');
-                    return
-                }
+                // if (user === 1){
+                //     redirect('/');
+                //     return
+                // }
 
                 const token = jwt.sign({
                     id : user.userId,
                     username: user.username,
-                    role: user.role
+                    isAdmin: user.isAdmin
                 }, secret_key, {
                     expiresIn : '1d'
                 })
@@ -94,4 +96,27 @@ export async function signin(formdata: FormData){
 export async function signOut(){
     cookies().delete('token')
     redirect('/')
+}
+
+export async function addTeacher(formdata : FormData) {
+    try
+    {
+        const username = formdata.get('username')
+        const password = formdata.get('password')
+        const name = formdata.get('name')
+
+        const teacherModel = new TeacherModel({
+            username : (username as string),
+            password : (password as string),
+            isAdmin : false,
+            name : (name as string)
+        });
+
+        const res = teacherModel.save();
+
+    }
+    catch(err)
+    {
+
+    }
 }

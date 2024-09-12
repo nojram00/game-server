@@ -1,19 +1,21 @@
-import { SectionModel, UserModel } from "@main/types/types";
+
+import SectionModel from "@main/models/sections";
 import { NextRequest, NextResponse } from "next/server";
 
 interface Params{
-    sectionId : string
+    userId : string,
+    type : "add-teacher" | "add-student"
 }
 
 export async function GET(req: NextRequest, {params} : { params : Params }) {
-    const sectionId = params.sectionId
+    const sectionId = params.userId
 
-    const data = await SectionModel.getStudentsBySecId(sectionId)
+    const data = await SectionModel.find(sectionId)
 
     return NextResponse.json(
         {
-            message: `Getting students list from section id: ${params.sectionId}`,
-            data : data
+            message: `Getting students list from section id: ${sectionId}`,
+            data : data?.getData()
         }
     )
 }
@@ -21,17 +23,17 @@ export async function GET(req: NextRequest, {params} : { params : Params }) {
 
 // Add teacher and students
 export async function PATCH(req: NextRequest, {params} : { params : Params }) {
-    const { studentId } = await req.json()
+    switch(params.type){
+        case "add-teacher":
 
-    const result = await UserModel.addSection(studentId, params.sectionId)
+            return
 
-    if(result){
-        const data = await UserModel.find(studentId)
-        return NextResponse.json(
-            {
-                data : data
-            }
-        )
+        case "add-student":
+
+            return
+
+        default:
+            return
     }
 
 }

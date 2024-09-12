@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@types/jsonwebtoken": "^9.0.6",
+    "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "daisyui": "^4.12.10",
     "firebase": "^10.13.1",
