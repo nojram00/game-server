@@ -4,6 +4,7 @@ import { ref, set, onValue, push, get } from "firebase/database";
 import { hash } from "crypto";
 import jwt from 'jsonwebtoken';
 import { secret_key } from "@config/environment";
+import { Student } from "@main/types/types";
 
 interface User{
     username : string;
@@ -17,38 +18,41 @@ interface RequestBody{
 }
 
 export async function POST(request : NextRequest){
-    const req_body : RequestBody = await request.json()
-    const userRef = ref(realtimeDb, 'users/')
+    const req_body : RequestBody = await request.json() as RequestBody
+    const userRef = ref(realtimeDb, 'students/')
 
 
     const snapshot = await get(userRef)
 
-    let user : any | undefined = undefined
+    let user : Student | null = null
 
+    let data : Array<Student> = []
     if (snapshot.exists()) {
-        const users = snapshot.val() as { [key:string] : User };
-
-        user = Object.entries(users).find(([key, userData]) => {
-            return userData.username === req_body.username && userData.password === req_body.password
+        snapshot.forEach((s) => {
+            data.push({
+                studentId : s.key,
+                ...s.val()
+            })
         })
 
-        if (user){
-            user = {
-                userId : user[0],
-            ...(user[1] && typeof user[1] == 'object' ? user[1] : {})
-            }
-        }
+
+    }
+
+    user = data.filter((d) => d.username === req_body.username && d.password === req_body.password)
+
+    if(user){
+
+        const token = jwt.sign({
+            id: user.studentId,
+            username: user.username
+        }, secret_key, {
+            expiresIn: "1d"
+        })
+
+        return NextResponse.json({
+            data: token
+        })
     }
 
 
-    const token = await jwt.sign({
-        id : user.userId,
-        username : user.username
-    }, secret_key, {
-        expiresIn : "1d"
-    })
-
-    return NextResponse.json({
-        data: token
-    })
 }
