@@ -1,14 +1,18 @@
 import StudentModel from "@main/models/student";
-import { Student } from "@main/types/types";
+import { db, insertStudent, Student, StudentType } from "@main/models_v2/drizzle";
+// import { Student } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req : NextRequest) {
 
-    const requestBody = await req.json() as Student
+    const requestBody = await req.json() as StudentType
 
-    const student = new StudentModel(requestBody)
+    // const student = new StudentModel(requestBody)
 
-    const data = await student.save()
+    // const data = await student.save()
+
+    const data = await insertStudent(requestBody)
+
 
     if (data) {
         return NextResponse.json({
