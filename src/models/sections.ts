@@ -146,7 +146,8 @@ export default class SectionModel {
         {
             const studentRef = Base.getReference(`students/${studentId}`)
 
-            await update(studentRef, { studentId : this.getData().sectionId, section : this.getData() })
+            const section = await this.getData()
+            await update(studentRef, { studentId : section.sectionId, section : this.getData() })
 
             const snapshot = await get(studentRef)
 

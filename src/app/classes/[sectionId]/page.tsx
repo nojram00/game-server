@@ -1,3 +1,5 @@
+import Navbar from "@main/components/navbar"
+import Sidebar from "@main/components/sidebar"
 import SectionModel from "@main/models/sections"
 
 interface Params{
@@ -11,8 +13,18 @@ export default async function ClassInfo({ params } : { params : Params }) {
 
 
     return(
-        <div>
+        <div className='flex flex-col'>
+            <Navbar headerName={`Section - ${sectionInfo?.sectionName}`}/>
 
+            <div className='flex flex-row'>
+            <div>
+                <Sidebar />
+            </div>
+
+            <div className='w-full'>
+
+            </div>
+            </div>
         </div>
     )
 }
