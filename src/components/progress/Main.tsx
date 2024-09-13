@@ -22,29 +22,29 @@ export default function Main(props : Props) {
             <thead>
             <tr>
                 { typeof props.header_row !== 'undefined' && props.header_row.map((row, id) => (
-                    <th key={id}>{row}</th>
+                    <th key={id} className='text-2xl'>{row}</th>
                 ))}
             </tr>
             </thead>
             <tbody>
             { typeof props.data_row !== 'undefined' && props.data_row.map((data, id) => (
                 <tr key={id}>
-                    <td>
+                    <td className='text-2xl'>
                         {data.name}
                     </td>
-                    <td>
+                    <td className='text-2xl'>
                         {data.username}
                     </td>
-                    <td>
+                    <td className='text-2xl'>
                         {data.quantum_mastery}
                     </td>
-                    <td>
+                    <td className='text-2xl'>
                         {data.ecology_mastery}
                     </td>
-                    <td>
+                    <td className='text-2xl'>
                         {data.momentum_mastery}
                     </td>
-                    <td>
+                    <td className='text-2xl'>
                         {data.tera_mastery}
                     </td>
 

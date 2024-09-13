@@ -12,6 +12,7 @@ import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
 import { Teacher } from "./types/types";
 import { TeacherModel } from "./models/teacher";
+import SectionModel from "./models/sections";
 
 export async function signin(formdata: FormData){
     try
@@ -114,6 +115,28 @@ export async function addTeacher(formdata : FormData) {
 
         const res = teacherModel.save();
 
+    }
+    catch(err)
+    {
+
+    }
+}
+
+export async function AddClassData(formdata : FormData) {
+    try{
+        const section_name = formdata.get('name')
+        const teacher = formdata.get('teacher_id') as string | null | number
+
+        const newSection = new SectionModel({
+            sectionName : (section_name as string),
+            teacherId : (teacher === 0 ? null : teacher as string)
+        })
+
+        const save = await newSection.save()
+
+        if (save){
+            redirect('/classes')
+        }
     }
     catch(err)
     {

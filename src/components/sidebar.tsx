@@ -1,7 +1,11 @@
+import isAdmin from '@main/libs/GetRole'
+import { cookies } from 'next/headers'
 import Link from 'next/link'
 import React from 'react'
 
-export default function Sidebar() {
+export default async function Sidebar() {
+
+  const is_admin = await isAdmin()
   const navs = [
     {
         name: "Dashboard",
@@ -14,8 +18,25 @@ export default function Sidebar() {
     {
         name : "Progress",
         link : "/progress"
+    },
+    {
+        name : "Classes",
+        link: "/classes"
     }
 ]
+
+  if(is_admin){
+    const admin_navs = [
+        {
+            name : "Add Teacher",
+            link : "/add-teacher"
+        }
+    ]
+
+    admin_navs.forEach((n) => {
+        navs.push(n)
+    })
+  }
 
 
   return (
