@@ -24,23 +24,23 @@ export async function POST(request : NextRequest){
 
     const snapshot = await get(userRef)
 
-    let user : Student | null = null
+    let user : Student | null | undefined = null
 
     let data : Array<Student> = []
     if (snapshot.exists()) {
         snapshot.forEach((s) => {
             data.push({
                 studentId : s.key,
-                ...s.val()
+                ...(s.val() as Student)
             })
         })
 
 
     }
 
-    user = data.filter((d) => d.username === req_body.username && d.password === req_body.password)
+    user = data.find((d) => d.username === req_body.username && d.password === req_body.password)
 
-    if(user){
+    if(user && typeof user !== 'undefined'){
 
         const token = jwt.sign({
             id: user.studentId,
@@ -53,6 +53,10 @@ export async function POST(request : NextRequest){
             data: token
         })
     }
+
+    return NextResponse.json({
+        message: "Not Found"
+    }, { status : 404 })
 
 
 }
