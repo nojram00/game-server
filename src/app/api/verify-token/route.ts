@@ -22,7 +22,7 @@ export async function POST(req: NextRequest){
     {
         const req_body = await req.json()
         const decoded = await verifyToken(req_body.token, secret_key)
-        const uid = decoded.id
+        const uid = decoded.studentId
 
         return NextResponse.json({
             userId : uid

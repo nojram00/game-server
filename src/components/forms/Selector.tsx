@@ -1,32 +1,19 @@
 'use client'
-import { Section } from '@main/types/types'
+import { Section, Student } from '@main/types/types'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
-export default function Selector() {
+interface Props{
+  data? : Array<Section>
+}
 
-  const [sections, setSections] = useState<Array<Section>>([])
-  useEffect(() => {
-    axios.get('/api/sections').then((res) => {
-      const { data } = res
+export default function Selector(props : Props) {
 
-      let a : Array<Object> = []
-
-      data.forEach((d : any) => {
-        a.push(d)
-      });
-
-      setSections(a)
-
-    })
-
-
-  }, [])
   return (
     <select className="select w-full max-w-xs">
         <option className='font-20' defaultValue={0}>Section</option>
-        {typeof sections !== "undefined" && sections.map((section, i) => (
-          <option value={typeof section.sectionId !== "undefined" || section.sectionId !== null ? section.sectionId : ""} key={i}>{section.sectionName}</option>
+        {props.data && props.data.map((section, i) => (
+          <option value={(section.sectionId as string)} key={i}>{section.sectionName}</option>
         ))}
     </select>
   )

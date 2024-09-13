@@ -13,10 +13,15 @@ const verifyToken = async (token : string, secret_key : string) : Promise<any> =
 }
 
 
-const protected_routes : Array<String> = [
+const protected_routes : Array<string> = [
     '/dashboard',
     '/scores',
-    '/progress'
+    '/progress',
+    '/add-teacher'
+]
+
+const admin_only : Array<string> = [
+    '/add-teacher'
 ]
 
 export async function middleware(req : NextRequest){
@@ -50,11 +55,6 @@ export async function middleware(req : NextRequest){
             const decoded = await verifyToken((typeof token_cookie == 'string' ? token_cookie : ""), secret_key)
 
             if(decoded){
-                if (decoded.role === 1){
-                    req.cookies.delete('token')
-                    return NextResponse.redirect(new URL("/", req.url))
-                }
-
                 return NextResponse.next()
             }
 
@@ -66,6 +66,26 @@ export async function middleware(req : NextRequest){
         }
     }
 
+    // Check Admin Only site
+    if(admin_only.includes(req.nextUrl.pathname)){
+        const cookies = req.cookies
+        const token_cookie = cookies.get('token')?.value
+
+        if(!token_cookie){
+            return NextResponse.redirect(new URL("/", req.url))
+        }
+
+        const decoded = await verifyToken((typeof token_cookie == 'string' ? token_cookie : ""), secret_key)
+
+        if(decoded){
+            if (decoded.isAdmin){
+               return NextResponse.next()
+            }
+        }
+
+
+    }
+
     return NextResponse.next()
 }
 
@@ -75,6 +95,7 @@ export const config = {
         '/',
         '/dashboard',
         '/scores',
-        '/progress'
+        '/progress',
+        '/add-teacher'
     ]
 }

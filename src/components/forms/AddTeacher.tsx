@@ -2,8 +2,12 @@ import { addTeacher } from '@main/actions'
 import React from 'react'
 import Textbox from './Textbox'
 import Selector from './Selector'
+import { Section, Student } from '@main/types/types'
 
-export default function AddTeacher() {
+interface Props {
+  data : Array<Section>
+}
+export default function AddTeacher(props : Props) {
   return (
     <div>
       <form action={addTeacher} className='flex flex-col gap-5 items-center justify-center'>
@@ -41,7 +45,7 @@ export default function AddTeacher() {
               clipRule="evenodd" />
           </svg>
         </Textbox>
-        <Selector />
+        <Selector data={props.data}/>
       </form>
     </div>
   )
