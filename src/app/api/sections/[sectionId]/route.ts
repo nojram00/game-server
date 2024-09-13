@@ -1,10 +1,10 @@
 
 import SectionModel from "@main/models/sections";
+import { Student, Teacher } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 interface Params{
     userId : string,
-    type : "add-teacher" | "add-student"
 }
 
 export async function GET(req: NextRequest, {params} : { params : Params }) {
@@ -20,10 +20,15 @@ export async function GET(req: NextRequest, {params} : { params : Params }) {
     )
 }
 
+interface RequestBody {
+   req_type : "add-teacher" | "add-student"
+   data : Student | Teacher
+}
 
 // Add teacher and students
 export async function PATCH(req: NextRequest, {params} : { params : Params }) {
-    switch(params.type){
+    const { req_type } = await req.json()
+    switch( req_type ){
         case "add-teacher":
 
             return
