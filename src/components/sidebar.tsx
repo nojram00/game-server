@@ -1,5 +1,4 @@
-import isAdmin from '@main/libs/GetRole'
-import { cookies } from 'next/headers'
+import { isAdmin } from '@main/libs/Session'
 import Link from 'next/link'
 import React from 'react'
 

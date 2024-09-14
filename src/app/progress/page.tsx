@@ -2,6 +2,7 @@ import Navbar from '@main/components/navbar'
 import Main from '@main/components/progress/Main'
 import Sidebar from '@main/components/sidebar'
 import StudentModel from '@main/models/student'
+import { getStudentWithProgress } from '@main/models_v2/drizzle'
 import { Student } from '@main/types/types'
 import React from 'react'
 
@@ -11,10 +12,11 @@ export default async function progress() {
  ]
 
  const get_data = async () => {
-    const students = await StudentModel.getAll()
+    const students = await getStudentWithProgress()
 
 
     let data : any = []
+
     if(students){
 
 
@@ -22,14 +24,14 @@ export default async function progress() {
         return []
       }
 
-      students.forEach((student : Student) => {
+      students.forEach((student : any) => {
         data.push({
-          name : student.name,
-          username : student.username,
-          quantum_mastery : student.progress?.quantum_mastery,
-          ecology_mastery : student.progress?.ecology_mastery,
-          momentum_mastery : student.progress?.momentum_mastery,
-          tera_mastery : student.progress?.tera_mastery
+          name : student.students.name,
+          username : student.students.username,
+          quantum_mastery : student.progress.quantumMastery,
+          ecology_mastery : student.progress.ecologyMastery,
+          momentum_mastery : student.progress.momentumMastery,
+          tera_mastery : student.progress.teraMastery
         })
       });
 
@@ -38,7 +40,6 @@ export default async function progress() {
   }
 
   var data = await get_data()
-
 
   return (
     <div className='flex flex-col'>

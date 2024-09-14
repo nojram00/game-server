@@ -1,98 +1,36 @@
 // Form Actions
 'use server'
-
-import { realtimeDb } from "@config/firebase.config";
-import { equalTo, get, query, ref } from "firebase/database";
 import jwt from 'jsonwebtoken'
 import { generateSecret, SignJWT } from "jose";
-import { NextRequest, NextResponse } from "next/server";
 import { secret_key } from "./config/environment";
-import { request } from "http";
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { Teacher } from "./types/types";
-import { TeacherModel } from "./models/teacher";
-import SectionModel from "./models/sections";
+import { changePassword, createSection, createTeacher, getAdmin, getStudent, getTeacher } from "./models_v2/drizzle";
+import { comparePass } from "./libs/PasswordGenerator";
+import { setSession } from './libs/Session';
 
 export async function signin(formdata: FormData){
     try
     {
         const username = formdata.get('username');
         const password = formdata.get('password');
-        const userRef = ref(realtimeDb, 'teachers');
 
-        const snapshot = await get(userRef)
-
-        if (snapshot.exists()) {
-            let users : any = []
-            snapshot.forEach(user => {
-                users.push({
-                    userid : user.key,
-                    ...(user.val())
-                })
-            });
-
-            const user : Teacher = users.find((u : any) => {
-                return u.username === username && u.password === password
-            })
-
-            if (user) {
-
-                // if (user === 1){
-                //     redirect('/');
-                //     return
-                // }
-
-                const token = jwt.sign({
-                    id : user.userId,
-                    username: user.username,
-                    isAdmin: user.isAdmin
-                }, secret_key, {
-                    expiresIn : '1d'
-                })
+        const user = await getTeacher((username as string))
 
 
-                // const secret = await createSecretKey(secret_key)
-
-                // const token = await new SignJWT({
-                //     id: user.userId,
-                //     username : user.username,
-                //     role : user.role
-                // }).setProtectedHeader({ alg : 'HS256'})
-                // .setExpirationTime('1d')
-                // .sign(secret)
-                // const response = NextResponse.json({
-                //     message: "Login Success!"
-                // }, {
-                //     status: 200
-                // })
-
-                // response.cookies.set('token', token, {
-                    // httpOnly: true,
-                    // maxAge: 60 * 60,
-                    // path: '/',
-                    // sameSite: 'lax',
-                    // secure: process.env.NODE_ENV === 'production',
-                // })
-                cookies().set('token', token, {
-                    httpOnly: true,
-                    maxAge: 60 * 60,
-                    path: '/',
-                    sameSite: 'lax',
-                    secure: process.env.NODE_ENV === 'production',
-                })
+            if (comparePass(password as string, user[0].password)) {
+               await setSession(user[0])
             }
+        }
+        catch(err){
+            console.error(err)
+        }
+        finally{
+            redirect('/dashboard')
         }
 
     }
-    catch(err){
-        console.error(err)
-    }
-    finally{
-        redirect('/dashboard')
-    }
 
-}
 
 export async function signOut(){
     cookies().delete('token')
@@ -105,15 +43,13 @@ export async function addTeacher(formdata : FormData) {
         const username = formdata.get('username')
         const password = formdata.get('password')
         const name = formdata.get('name')
+        const section = formdata.get('section')
 
-        const teacherModel = new TeacherModel({
-            username : (username as string),
-            password : (password as string),
-            isAdmin : false,
-            name : (name as string)
-        });
-
-        const res = teacherModel.save();
+       const res = createTeacher({
+           name: (name as string),
+           username: (username as string),
+           password: (password as string)
+       }, Number(section))
 
     }
     catch(err)
@@ -125,21 +61,32 @@ export async function addTeacher(formdata : FormData) {
 export async function AddClassData(formdata : FormData) {
     try{
         const section_name = formdata.get('name')
-        const teacher = formdata.get('teacher_id') as string | null | number
+        const teacher = formdata.get('teacher_id')
 
-        const newSection = new SectionModel({
-            sectionName : (section_name as string),
-            teacherId : (teacher === 0 ? null : teacher as string)
-        })
 
-        const save = await newSection.save()
+        const save = await createSection(Number(teacher), (section_name as string))
 
-        if (save){
+        if (save.length > 0){
+            console.log("Created!")
             redirect('/classes')
         }
     }
     catch(err)
     {
 
+    }
+}
+
+export async function changePass(formdata : FormData) {
+    const password = formdata.get('password')
+    const confirm_password = formdata.get('confirm_password')
+    const new_password = formdata.get('new_password')
+
+    if(password === confirm_password){
+       const result = await changePassword(new_password as string, password as string)
+
+       if (result.length > 0){
+        console.log("password changed: ", result)
+       }
     }
 }

@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { jwtVerify } from "jose"
 import { secret_key } from "./config/environment"
-
-const verifyToken = async (token : string, secret_key : string) : Promise<any> => {
-    try{
-        const { payload } = await jwtVerify(token, new TextEncoder().encode(secret_key));
-        return payload;
-    }
-    catch(error){
-        throw new Error('Token Verification Failed');
-    }
-}
+import { getSession } from "./libs/Session";
 
 
 const protected_routes : Array<string> = [
@@ -26,17 +17,13 @@ const admin_only : Array<string> = [
 
 export async function middleware(req : NextRequest){
 
+    const session = await getSession()
     // Guest
     if(req.nextUrl.pathname === "/"){
         console.log("Home")
 
-        const token = req.cookies.get('token')
-        if(token){
-            const dec = await verifyToken(token.value, secret_key)
-
-            if (dec){
-                return NextResponse.redirect(new URL('/dashboard', req.url))
-            }
+        if (session){
+            return NextResponse.redirect(new URL('/dashboard', req.url))
         }
     }
 
@@ -44,17 +31,8 @@ export async function middleware(req : NextRequest){
     if (protected_routes.includes(req.nextUrl.pathname)){
         try
         {
-            const cookies = req.cookies
 
-            const token_cookie = cookies.get('token')?.value
-
-            if(!token_cookie){
-                return NextResponse.redirect(new URL("/", req.url))
-            }
-
-            const decoded = await verifyToken((typeof token_cookie == 'string' ? token_cookie : ""), secret_key)
-
-            if(decoded){
+            if(session){
                 return NextResponse.next()
             }
 
@@ -68,21 +46,16 @@ export async function middleware(req : NextRequest){
 
     // Check Admin Only site
     if(admin_only.includes(req.nextUrl.pathname)){
-        const cookies = req.cookies
-        const token_cookie = cookies.get('token')?.value
 
-        if(!token_cookie){
+        if(session === null){
             return NextResponse.redirect(new URL("/", req.url))
         }
 
-        const decoded = await verifyToken((typeof token_cookie == 'string' ? token_cookie : ""), secret_key)
-
-        if(decoded){
-            if (decoded.isAdmin){
+        if(session){
+            if (Boolean(session.isAdmin)){
                return NextResponse.next()
             }
         }
-
 
     }
 

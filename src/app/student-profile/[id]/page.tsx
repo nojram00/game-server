@@ -1,20 +1,35 @@
+import Navbar from '@main/components/navbar'
+import Sidebar from '@main/components/sidebar'
 import Main from '@main/components/student-profile/Main'
 import StudentModel from '@main/models/student'
-import { Score, Progress } from '@main/types/types'
+import { getStudentInfo } from '@main/models_v2/drizzle'
 import React from 'react'
 
+interface Score{
+    pre_test : number
+    post_test : number
+}
+
+interface Progress {
+    quantum_mastery : number,
+    ecology_mastery : number,
+    momentum_mastery : number,
+    tera_mastery : number
+}
 
 export default async function studentProfile({params} : {params : {id : string}}) {
 
-    const getScoreData = async () => {
-        const student : StudentModel | null = await StudentModel.find(params.id)
+    const student = await getStudentInfo(Number(params.id))
 
-        const studentInfo = student?.getData()
+    console.log(student)
+
+    const getScoreData = async () => {
+
         let data : Score
-        if(studentInfo){
+        if(student){
             data = {
-                post_test : (typeof studentInfo.score?.post_test !== 'undefined' ? studentInfo.score.post_test : 0),
-                pre_test : (typeof studentInfo.score?.pre_test !== 'undefined' ? studentInfo.score.pre_test : 0)
+                post_test : Number(student[0].scores?.postTest),
+                pre_test : Number(student[0].scores?.preTest)
             }
 
             return data
@@ -28,16 +43,14 @@ export default async function studentProfile({params} : {params : {id : string}}
     }
 
     const getProgressData = async () => {
-        const student : StudentModel | null = await StudentModel.find(params.id)
 
-        const studentInfo = student?.getData()
         let data : Progress
-        if(studentInfo){
+        if(student){
             data = {
-                quantum_mastery : (typeof studentInfo.progress?.quantum_mastery !== "undefined" ? studentInfo.progress.quantum_mastery : 0),
-                ecology_mastery : (typeof studentInfo.progress?.ecology_mastery !== "undefined" ? studentInfo.progress.ecology_mastery : 0),
-                momentum_mastery : (typeof studentInfo.progress?.momentum_mastery !== "undefined" ? studentInfo.progress.momentum_mastery : 0),
-                tera_mastery : (typeof studentInfo.progress?.tera_mastery !== 'undefined' ? studentInfo.progress?.tera_mastery : 0)
+                quantum_mastery : Number(student[0].progress?.quantumMastery),
+                ecology_mastery : Number(student[0].progress?.ecologyMastery),
+                momentum_mastery : Number(student[0].progress?.momentumMastery),
+                tera_mastery : Number(student[0].progress?.teraMastery)
             }
 
             return data
@@ -55,12 +68,15 @@ export default async function studentProfile({params} : {params : {id : string}}
 
 
     return (
-    <div className='flex flex-col justify-center items-center'>
-        <div className='p-5'>
-            <h1 className='text-2xl font-bold'>Student Profile</h1>
-        </div>
-        <div className='w-[80vw]'>
-            <Main score={score_data} progress={progress_data}/>
+    <div className='flex flex-col'>
+        <Navbar headerName='Student Profile'/>
+        <div className='flex flex-row'>
+            <div>
+                <Sidebar />
+            </div>
+            <div className='w-full p-5'>
+                <Main score={score_data} progress={progress_data}/>
+            </div>
         </div>
     </div>
   )

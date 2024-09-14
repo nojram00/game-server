@@ -2,13 +2,15 @@ import Card1 from '@main/components/cards/card1'
 import Navbar from '@main/components/navbar'
 import Sidebar from '@main/components/sidebar'
 import SectionModel from '@main/models/sections'
+import { getSections } from '@main/models_v2/drizzle'
 import { Section } from '@main/types/types'
 import Link from 'next/link'
 import React from 'react'
 
 export default async function Sections() {
 
-  const section_lists = await SectionModel.getAll() as Array<Section>
+  const section_lists = await getSections()
+  console.log(section_lists)
   return (
     <div className='flex flex-col'>
         <Navbar headerName='Sections'/>
@@ -24,7 +26,7 @@ export default async function Sections() {
             </div>
             { section_lists.map((data, i) => (
                 <Card1 key={i}>
-                    <Link href={`classes/${data.sectionId}`}>{ data.sectionName }</Link>
+                    <Link href={`classes/${data.id}`}>{ data.sectionName }</Link>
                 </Card1>
             ))}
         </div>

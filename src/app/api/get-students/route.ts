@@ -18,8 +18,10 @@ export async function GET(req : NextRequest) {
             //     }, {status : 400})
             // }
 
+            const result = await students.execute()
+
             return NextResponse.json({
-                data : students
+                data : result
             }, { status : 200 })
         }
 

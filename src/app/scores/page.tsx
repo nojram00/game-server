@@ -3,7 +3,7 @@ import Main from '@main/components/scores/Main'
 import Sidebar from '@main/components/sidebar'
 import Table from '@main/components/table'
 import StudentModel from '@main/models/student'
-import { Student } from '@main/types/types'
+import { getStudents, getStudentsWithScores, Student } from '@main/models_v2/drizzle'
 import React from 'react'
 
 export default async function scores() {
@@ -13,9 +13,10 @@ export default async function scores() {
   ]
 
   const get_data = async () => {
-    const students = await StudentModel.getAll()
+    const students = await getStudentsWithScores()
 
 
+    console.log(students)
     let data : any = []
 
     if(students){
@@ -25,14 +26,14 @@ export default async function scores() {
         return []
       }
 
-      students.forEach((student : Student) => {
+      students.forEach((student : any) => {
 
         data.push({
-          id : student.studentId,
-          name : student.name,
-          username : student.username,
-          pre_test_score : student.score?.pre_test,
-          post_test_score : student.score?.post_test
+          id : student.students.id,
+          name : student.students.name,
+          username : student.students.username,
+          pre_test : student.scores.preTest,
+          post_test : student.scores.postTest
         })
       });
 
@@ -41,6 +42,8 @@ export default async function scores() {
   }
 
   var data = await get_data()
+
+  console.log(data)
 
   return (
     <div className='flex flex-col'>
