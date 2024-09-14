@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import Textbox from './Textbox'
 import TeacherSelector from './TeacherSelector'
@@ -5,7 +6,7 @@ import { Teacher } from '@main/types/types'
 import { AddClassData } from '@main/actions'
 
 interface Props{
-  data? : Array<Teacher>
+  data? : Array<any>
 }
 export default function AddClassForm(props : Props) {
   return (

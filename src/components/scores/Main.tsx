@@ -18,7 +18,6 @@ interface ScoreData{
 }
 
 export default function Main(props : Props) {
-  console.log(props.data_row)
   return (
     <div className="overflow-x-auto">
         <table className="table table-zebra">

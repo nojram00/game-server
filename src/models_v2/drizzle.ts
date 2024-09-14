@@ -155,8 +155,16 @@ export const getTeacher = async (username : string) => {
     return await query.execute()
 }
 
+export const getTeachers = async () => {
+    const query = await db.select()
+                    .from(Teacher)
+                    .where(eq(Teacher.isAdmin, false))
+
+    return query
+}
+
 export const changePassword = async (new_password: string, password : string) => {
-    const query = db.update(Teacher)
+    const query = await db.update(Teacher)
                     .set({ password : hashPassword(new_password) })
                     .where(eq(Teacher.password, password))
                     .returning()
@@ -165,14 +173,14 @@ export const changePassword = async (new_password: string, password : string) =>
 }
 
 export const getAdmin = async (username : string, password : string) => {
-    const query = db.select()
+    const query = await db.select()
                     .from(Teacher)
                     .where(and(
                             eq(Teacher.username, username),
                             eq(Teacher.password, password),
                             eq(Teacher.isAdmin, true)
                         ))
-    return await query.execute()
+    return query
 }
 
 

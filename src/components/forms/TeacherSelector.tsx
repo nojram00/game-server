@@ -1,3 +1,4 @@
+'use client'
 import { Teacher } from '@main/types/types'
 import React from 'react'
 

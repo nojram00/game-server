@@ -1,3 +1,4 @@
+'use client'
 import { addTeacher } from '@main/actions'
 import React from 'react'
 import Textbox from './Textbox'

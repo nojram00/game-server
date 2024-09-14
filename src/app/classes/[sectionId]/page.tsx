@@ -1,6 +1,5 @@
 import Navbar from "@main/components/navbar"
 import Sidebar from "@main/components/sidebar"
-import SectionModel from "@main/models/sections"
 import { getSection, getSectionStudents } from "@main/models_v2/drizzle"
 
 interface Params{

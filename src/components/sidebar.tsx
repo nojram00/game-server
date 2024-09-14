@@ -1,10 +1,10 @@
-import { isAdmin } from '@main/libs/Session'
+import { getSession, isAdmin } from '@main/libs/Session'
 import Link from 'next/link'
 import React from 'react'
 
 export default async function Sidebar() {
 
-  const is_admin = await isAdmin()
+  const session = await getSession()
   const navs = [
     {
         name: "Dashboard",
@@ -24,7 +24,7 @@ export default async function Sidebar() {
     }
 ]
 
-  if(is_admin){
+  if(session && session.isAdmin){
     const admin_navs = [
         {
             name : "Add Teacher",

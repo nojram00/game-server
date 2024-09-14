@@ -3,6 +3,7 @@ import Sidebar from '@main/components/sidebar'
 import React from 'react'
 
 export default function dashboard() {
+
   return (
     <div>
         <Navbar headerName='Dashboard'/>

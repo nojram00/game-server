@@ -20,8 +20,6 @@ export async function middleware(req : NextRequest){
     const session = await getSession()
     // Guest
     if(req.nextUrl.pathname === "/"){
-        console.log("Home")
-
         if (session){
             return NextResponse.redirect(new URL('/dashboard', req.url))
         }
@@ -31,7 +29,6 @@ export async function middleware(req : NextRequest){
     if (protected_routes.includes(req.nextUrl.pathname)){
         try
         {
-
             if(session){
                 return NextResponse.next()
             }

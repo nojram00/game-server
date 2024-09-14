@@ -28,19 +28,15 @@ export async function setSession(user : any){
 }
 
 export async function getSession() {
-    try {
-        const token = cookies().get('token')
-        if(token){
+    const token = cookies().get('token')
+    if(token){
 
-            const { payload } = await jwtVerify(token.value, new TextEncoder().encode(secret_key))
+        const { payload } = await jwtVerify(token.value, new TextEncoder().encode(secret_key))
 
-            return payload
+        return payload
 
-        }
-        return null
-    } catch (error) {
-        throw new Error('Token Verification Failed')
     }
+    return null
 }
 
 export async function isAdmin() : Promise<boolean> {
