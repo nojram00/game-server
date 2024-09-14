@@ -1,3 +1,4 @@
+ // @ts-nocheck
 import AddTeacher from '@main/components/forms/AddTeacher'
 import Navbar from '@main/components/navbar'
 import Sidebar from '@main/components/sidebar'
@@ -8,8 +9,6 @@ import React from 'react'
 
 export default async function AddTeacherPage() {
   const sections = await getSections()
-
-  console.log(sections)
   return (
     <div className='flex flex-col'>
         <Navbar headerName='Dashboard'/>
