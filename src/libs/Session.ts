@@ -16,6 +16,7 @@ export async function setSession(user : any){
         isAdmin : user.isAdmin
     })
         .setExpirationTime(expiration)
+        .setProtectedHeader({ alg : 'HS256'})
         .sign(new TextEncoder().encode(secret_key))
 
     cookies().set("token", token, {

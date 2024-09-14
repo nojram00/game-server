@@ -1,4 +1,4 @@
-import { genSaltSync, hashSync, compareSync,  } from 'bcrypt-ts'
+import { genSaltSync, hashSync, compareSync } from 'bcrypt-ts'
 
 export function hashPassword(unhashed : string) : string{
     const salt = genSaltSync(10)

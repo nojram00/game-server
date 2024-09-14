@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import NextTopLoader from 'nextjs-toploader'
 import "./globals.css";
 import { Provider } from "react-redux";
 import store from "@main/store";
@@ -18,6 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+        <NextTopLoader />
         <body className={inter.className}>{children}</body>
     </html>
   );

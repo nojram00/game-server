@@ -21,6 +21,10 @@ export default async function Sidebar() {
     {
         name : "Classes",
         link: "/classes"
+    },
+    {
+        name : "Account Settings",
+        link : "/account-settings"
     }
 ]
 

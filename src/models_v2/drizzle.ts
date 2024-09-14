@@ -19,7 +19,6 @@ import {
 
   } from 'drizzle-orm/pg-core';
 import { and, eq, ne, relations } from 'drizzle-orm';
-import { hashPassword } from '@main/libs/PasswordGenerator';
 
 
 export const db = drizzle(sql);
@@ -31,7 +30,7 @@ export const Student = pgTable(
     {
         id : serial('id').primaryKey(),
         name : text('name').notNull(),
-        username : text('username').notNull(),
+        username : text('username').notNull().unique('username'),
         password : text('password').notNull(),
         section : integer('section_id').references(() => Section.id),
         score : integer('score_id').references(() => Score.id),
@@ -136,14 +135,14 @@ export const getStudentInfo = async (studentId : number) => {
 }
 
 export const getStudent = async (username : string, password : string) => {
-    const query = db.select()
+    const query = await db.select()
                     .from(Student)
                     .where(and(
                             eq(Student.username, username),
                             eq(Student.password, password)
                         ))
 
-    return await query.execute()
+    return query
 }
 
 export const getTeacher = async (username : string) => {
@@ -153,6 +152,14 @@ export const getTeacher = async (username : string) => {
                             eq(Teacher.username, username),
                         ))
     return await query.execute()
+}
+
+export const getTeacherById = async (id : number | string) => {
+    const query = await db.select()
+                        .from(Teacher)
+                        .where(eq(Teacher.id, Number(id)))
+
+    return query[0]
 }
 
 export const getTeachers = async () => {
@@ -165,7 +172,7 @@ export const getTeachers = async () => {
 
 export const changePassword = async (new_password: string, password : string) => {
     const query = await db.update(Teacher)
-                    .set({ password : hashPassword(new_password) })
+                    .set({ password : new_password })
                     .where(eq(Teacher.password, password))
                     .returning()
 
@@ -223,11 +230,15 @@ export const getSectionStudents = async(id : number) => {
 
 export const createTeacher = async (newTeacher : typeof Teacher.$inferInsert, section_id : number | null) => {
 
-    newTeacher.password = hashPassword(newTeacher.password)
+    const teacher = await db.select().from(Teacher).where(eq(Teacher.username, newTeacher.username))
+
+    if (teacher.length > 0){
+        throw new Error(`Teacher ${newTeacher.username} already exists!`);
+    }
 
     const query = await db.insert(Teacher).values(newTeacher).returning()
 
-    if (section_id || section_id !== 0){
+    if (section_id || section_id !== 0 || !isNaN(section_id)){
         const update_section = await db.update(Section)
                                     .set({ teacherId : query[0].id })
                                     .where(eq(Section.id, section_id as number))
