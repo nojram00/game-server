@@ -5,7 +5,7 @@ import Selector from './Selector'
 import { Section, Student } from '@main/types/types'
 
 interface Props {
-  data : Array<Section>
+  data : Array<any>
 }
 export default function AddTeacher(props : Props) {
   return (
