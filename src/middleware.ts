@@ -15,9 +15,14 @@ const admin_only : Array<string> = [
     '/add-teacher'
 ]
 
+const authenticated_api : Array<string> = [
+
+]
+
 export async function middleware(req : NextRequest){
 
     const session = await getSession()
+
     // Guest
     if(req.nextUrl.pathname === "/"){
         if (session){
@@ -53,7 +58,6 @@ export async function middleware(req : NextRequest){
                return NextResponse.next()
             }
         }
-
     }
 
     return NextResponse.next()
@@ -61,11 +65,5 @@ export async function middleware(req : NextRequest){
 
 
 export const config = {
-    matcher : [
-        '/',
-        '/dashboard',
-        '/scores',
-        '/progress',
-        '/add-teacher'
-    ]
+    matcher : ['/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)']
 }

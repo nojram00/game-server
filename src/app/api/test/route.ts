@@ -2,41 +2,40 @@ import { NextRequest, NextResponse } from "next/server";
 import { realtimeDb } from "@config/firebase.config";
 import { ref, set, onValue, push } from "firebase/database";
 import { randomInt } from "crypto";
-import { Teacher } from "@main/types/types";
-import { TeacherModel } from "@main/models/teacher";
+import { db, getTeacher, Teacher } from "@main/models_v2/drizzle";
+import { comparePass, hashPassword } from "@main/libs/PasswordGenerator";
 
 export async function GET(request : NextRequest){
 
-    const userRef = ref(realtimeDb, 'users/');
-    var data: any = [];
-
-    onValue(userRef, (snapshot) => {
-        var users = snapshot.val()
-
-        Object.entries(users).forEach(([userId, userData]) => {
-            data.push({
-                userId : userId,
-                ...(userData && typeof userData == 'object' ? userData : {})
-            })
-        });
-    })
+    const create_admin = await db.insert(Teacher).values({
+        username : "admin02",
+        password : hashPassword("adminpass002"),
+        name : 'admin'
+    }).returning()
 
     return NextResponse.json({
-        message : "Hello",
-        users: data
+        data : create_admin[0]
     })
 }
 
 
 export async function POST(request : NextRequest){
 
-    const request_body = await request.json() as Teacher
-    const teacherData = new TeacherModel(request_body)
+    const { username, password } = await request.json()
 
-    const res = await teacherData.save()
+    const check_user = await getTeacher(username)
+
+    console.log(check_user)
+
+    if (comparePass(password, check_user[0].password)){
+        return NextResponse.json({
+            message: "Success",
+            data : check_user[0]
+        })
+    }
 
     return NextResponse.json({
-        message: "User Created!",
-        userId : teacherData.teacher.userId
-    })
+        message : "Not Found"
+    }, { status : 404 })
+
 }

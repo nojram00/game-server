@@ -20,20 +20,20 @@ export async function signin(formdata: FormData){
         const user = await getTeacher((username as string))
 
         // await setSession(user[0])
-
+        console.log(comparePass(password as string, user[0].password))
+        console.log(user[0])
         if (comparePass(password as string, user[0].password)) {
                await setSession(user[0])
+               console.log("Success")
             }
 
         }
         catch(err){
             console.error(err)
+            revalidatePath('/')
         }
-        finally{
-            // revalidatePath('/dashboard')
-            redirect('/dashboard')
 
-        }
+        redirect('/dashboard')
 
     }
 
@@ -102,5 +102,5 @@ export async function changeInfo(formdata : FormData) {
     }
 }
 
-// username : admin01
-// pass : newadmin567
+// username : admin02
+// pass : adminpass002

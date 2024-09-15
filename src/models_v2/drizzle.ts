@@ -134,15 +134,12 @@ export const getStudentInfo = async (studentId : number) => {
     return query
 }
 
-export const getStudent = async (username : string, password : string) => {
+export const getStudent = async (username : string) => {
     const query = await db.select()
                     .from(Student)
-                    .where(and(
-                            eq(Student.username, username),
-                            eq(Student.password, password)
-                        ))
+                    .where(eq(Student.username, username))
 
-    return query
+    return query[0]
 }
 
 export const getTeacher = async (username : string) => {
@@ -197,9 +194,9 @@ export const insertSection = async (section : typeof Section.$inferInsert) => {
 }
 
 export const getSections = async () => {
-    const query = db.select().from(Section)
+    const query = await db.select().from(Section)
 
-    return await query.execute()
+    return query
 }
 
 
@@ -271,3 +268,27 @@ export const addStudentFromSection = async (secId : number, studentId : number) 
     })
 }
 
+
+export const createProgress = async (newProgress : typeof Progress.$inferInsert, studentId : number) => {
+    const progress = await db.insert(Progress).values(newProgress).returning()
+
+    const student = await db.update(Student).set({ progress : progress[0].id }).where(eq(Student.id, studentId)).returning()
+
+    return student[0]
+}
+
+export const getProgress = async(studentId : number) => {
+    const query = await db.select({
+                            name : Student.name,
+                            username : Student.username,
+                            quantumMastery : Progress.quantumMastery,
+                            ecologyMastery : Progress.ecologyMastery,
+                            momentumMastery : Progress.momentumMastery,
+                            teraMastery : Progress.teraMastery,
+                            section : Section.sectionName
+                        }).from(Student)
+                        .leftJoin(Progress, eq(Student.progress, Progress.id))
+                        .leftJoin(Section, eq(Section.id, Student.section))
+                        .where(eq(Student.id, studentId))
+    return query[0]
+}

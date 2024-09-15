@@ -28,6 +28,26 @@ export async function setSession(user : any){
     })
 }
 
+export async function generateToken(user : any){
+    const d = new Date()
+    const expiration =  new Date(d.getFullYear(),
+                                ((d.getMonth() + 1) > 11 ?
+                                ((d.getMonth() + 1) % 12) :
+                                d.getMonth() + 1) ,
+                                d.getDate());
+
+    const token = await new SignJWT({
+        id : user.id,
+        username : user.username,
+        isAdmin : user.isAdmin
+    })
+        .setExpirationTime(expiration)
+        .setProtectedHeader({ alg : 'HS256'})
+        .sign(new TextEncoder().encode(secret_key));
+
+    return token
+}
+
 export async function getSession() {
     const token = cookies().get('token')
     if(token){

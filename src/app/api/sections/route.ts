@@ -1,10 +1,11 @@
 import SectionModel from "@main/models/sections";
-import { Section } from "@main/types/types";
+import { createSection, getSections, Section } from "@main/models_v2/drizzle";
+// import { Section } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(){
-    const sections = await SectionModel.getAll()
+    const sections = await getSections()
 
     if(sections){
         return NextResponse.json({
@@ -21,12 +22,15 @@ export async function GET(){
 // Create new section entry
 export async function POST(req : NextRequest) {
 
-    const req_body = await req.json() as Section
+    const { teacherId , section_name } = await req.json()
 
-    const newSection = new SectionModel(req_body)
+    // const newSection = new SectionModel(req_body)
 
-    const data = await newSection.save()
+    // const data = await newSection.save()
 
+    const data = await createSection((teacherId as number), (section_name as string))
+
+    console.log(data)
     if (data){
         return NextResponse.json({
             message: "Section Added",
