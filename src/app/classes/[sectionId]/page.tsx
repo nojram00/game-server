@@ -18,14 +18,13 @@ export default async function ClassInfo({ params } : { params : Params }) {
         'Momentum Mastery',
         'Tera Mastery'
     ]
-    const sectionInfo = section[0].section
 
-    console.log("Section: ", section)
+    const sectionInfo = (section.length > 0 ? section[0].section : null)
 
 
     return(
         <div className='flex flex-col'>
-            <Navbar headerName={`Section - ${sectionInfo.sectionName}`}/>
+            <Navbar headerName={`Section - ${sectionInfo?.sectionName}`}/>
 
             <div className='flex flex-row'>
             <div>
@@ -33,26 +32,34 @@ export default async function ClassInfo({ params } : { params : Params }) {
             </div>
 
             <div className='w-full overflow-x-auto'>
-                <table className="table ">
-                    <thead>
-                        <tr className="text-xl">
-                            { headers.map((d, i) => (
-                                <th key={i}>{d}</th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        { section.map((data, i) => (
-                            <tr key={i}>
-                                <td>
-
-                                </td>
+                { section.length > 0 ? (
+                    <table className="table ">
+                        <thead>
+                            <tr className="text-xl">
+                                { headers.map((d, i) => (
+                                    <th key={i}>{d}</th>
+                                ))}
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {section.map((data, i) => (
+                                <tr key={i}>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <div>
+                        No Students Found...
+                    </div>
+                )}
+
             </div>
             </div>
+
         </div>
     )
 }
