@@ -75,8 +75,24 @@ export default async function studentProfile({params} : {params : {id : string}}
             <div>
                 <Sidebar />
             </div>
-            <div className='w-full p-5'>
-                <BackButton />
+            <div className='w-full p-5 flex flex-col gap-3'>
+                <div>
+                    <BackButton />
+                </div>
+                <div className='flex gap-2 flex-col'>
+                    <div>
+                        <h1 className='text-xl'>Name: <span className='font-bold'>{ student?.name } </span></h1>
+                    </div>
+                    <div className='w-1/4'>
+                        <hr />
+                    </div>
+                    <div>
+                        <h1 className='text-xl'>Section: <span className='font-bold'>{ student?.section?.sectionName } </span></h1>
+                    </div>
+                    <div className='w-1/4'>
+                        <hr />
+                    </div>
+                </div>
                 <Main score={score_data} progress={progress_data}/>
             </div>
         </div>

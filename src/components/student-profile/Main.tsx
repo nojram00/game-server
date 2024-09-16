@@ -2,45 +2,55 @@
 import React from 'react'
 import { Bar, Pie } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from 'chart.js'
-import { Score, Progress } from '@main/types/types';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
-interface Props{
-    score : Score;
-    progress : Progress
-}
-export default function Main(props : Props)
+export default function Main(
+    { score, progress } :
+    {
+        score : { [key : string] : number } | any,
+        progress : { [key : string] : number } | any
+    })
 {
-    console.log(props.score)
+    const getRandomColor = () => {
+        const letters = '0123456789ABCDEF';
+
+        let color = '#';
+
+        for(let i = 0; i < 6; i++){
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+
+        return color;
+    }
+
     const score_data = {
-        labels: ['Pre Test', 'Post Test'],
+        labels: Object.keys(score).map(label => label),
         datasets: [
           {
             label: 'Scores',
-            data: [props.score?.pre_test, props.score?.post_test],
+            data: Object.keys(score).map((label : any) => score[label]),
             fill: false,
-            borderColor: 'rgb(75, 192, 192)',
+            borderColor: '#000000',
+            backgroundColor : Object.keys(score).map(() => getRandomColor()),
             tension: 0.1,
           },
         ],
       };
 
     const progress_data = {
-        labels : ['Quantum Mastery', 'Ecology Mastery', 'Momentum Mastery', 'Tera Mastery'],
+        labels : Object.keys(progress).map(label => label),
         datasets : [
             {
                 label : 'Progress',
-                data: [
-                    props.progress?.quantum_mastery,
-                    props.progress?.ecology_mastery,
-                    props.progress?.momentum_mastery,
-                    props.progress?.tera_mastery
-                ]
+                data: Object.keys(progress).map(label => progress[label]),
+                fill: false,
+                borderColor : '#000000',
+                backgroundColor : Object.keys(progress).map(() => getRandomColor()),
+                tension : 0.1,
             }
         ]
     }
-
 
     const options = {
         responsive: true,
@@ -66,14 +76,18 @@ export default function Main(props : Props)
         },
     };
     return (
-        <div className='grid grid-cols-2 gap-2 p-3'>
-            <div className='flex items-center justify-center'>
+        <div className='bg-accent grid grid-cols-2 gap-3 p-4 rounded-md'>
+            <div className='card bg-base-content flex items-center justify-center'>
                 {/* <Bar data={data} options={options}/> */}
-                <Pie data={score_data} />
+                <div className='card-body text-2xl'>
+                    <Pie data={score_data} />
+                </div>
             </div>
-            <div className='flex items-center justify-center'>
+            <div className='card bg-base-content flex items-center justify-center'>
                 {/* <Bar data={data} options={options}/> */}
-                <Pie data={progress_data} />
+                <div className='card-body text-2xl'>
+                    <Pie data={progress_data} />
+                </div>
             </div>
         </div>
     )
