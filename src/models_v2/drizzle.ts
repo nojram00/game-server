@@ -128,9 +128,17 @@ export const insertSection = async (section : typeof schema.Section.$inferInsert
 }
 
 export const getSections = async () => {
-    const query = await db.select().from(schema.Section)
+    const sections = await db.query.Section.findMany({
+        with : {
+            teacher : {
+                columns : {
+                    password : false
+                }
+            }
+        }
+    })
 
-    return query
+    return sections
 }
 
 

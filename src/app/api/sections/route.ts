@@ -1,5 +1,5 @@
 import SectionModel from "@main/models/sections";
-import { createSection, getSections, Section } from "@main/models_v2/drizzle";
+import { createSection, getSections } from "@main/models_v2/drizzle";
 // import { Section } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
