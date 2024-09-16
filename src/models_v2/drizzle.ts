@@ -39,17 +39,6 @@ export const getStudentWithProgress = async () => {
 
     return query
 }
-
-export const getStudentInfo = async (studentId : number) => {
-    const query = await db.select()
-                            .from(schema.Student)
-                            .where(eq(schema.Student.id, studentId))
-                            .leftJoin(schema.Progress, eq(schema.Progress.id, schema.Student.progress))
-                            .leftJoin(schema.Score, eq(schema.Score.id, schema.Student.score))
-
-    return query
-}
-
 export const getStudent = async (userId : number) => {
     const student = await db.query.Student.findFirst({
         where : eq(schema.Student.id, userId),

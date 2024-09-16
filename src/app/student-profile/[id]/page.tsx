@@ -3,7 +3,7 @@ import Navbar from '@main/components/navbar'
 import Sidebar from '@main/components/sidebar'
 import Main from '@main/components/student-profile/Main'
 import StudentModel from '@main/models/student'
-import { getStudentInfo, getStudent } from '@main/models_v2/drizzle'
+import { getStudent } from '@main/models_v2/drizzle'
 import React from 'react'
 
 interface Score{
