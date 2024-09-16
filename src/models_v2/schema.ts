@@ -74,8 +74,15 @@ export const Teacher = pgTable(
 
 export const sectionRelations = relations(Section, ({ many, one }) => ({
     students : many(Student),
-    teacher : one(Teacher)
+    teacher : one(Teacher, {
+        fields : [Section.teacherId],
+        references : [Teacher.id]
+    })
 }))
+
+export const teacherRelations = relations(Teacher, ( { one }) => ({
+
+}));
 
 export const studentRelations = relations(Student, ({ one }) => ({
     section : one(Section, {

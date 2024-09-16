@@ -2,7 +2,7 @@ import Navbar from '@main/components/navbar'
 import Sidebar from '@main/components/sidebar'
 import Main from '@main/components/student-profile/Main'
 import StudentModel from '@main/models/student'
-import { getStudentInfo } from '@main/models_v2/drizzle'
+import { getStudentInfo, getStudent } from '@main/models_v2/drizzle'
 import React from 'react'
 
 interface Score{
@@ -19,7 +19,7 @@ interface Progress {
 
 export default async function studentProfile({params} : {params : {id : string}}) {
 
-    const student = await getStudentInfo(Number(params.id))
+    const student = await getStudent(Number(params.id))
 
     console.log(student)
 
@@ -28,8 +28,8 @@ export default async function studentProfile({params} : {params : {id : string}}
         let data : Score
         if(student){
             data = {
-                post_test : Number(student[0].scores?.postTest),
-                pre_test : Number(student[0].scores?.preTest)
+                post_test : Number(student.score?.postTest),
+                pre_test : Number(student.score?.preTest)
             }
 
             return data
@@ -47,10 +47,10 @@ export default async function studentProfile({params} : {params : {id : string}}
         let data : Progress
         if(student){
             data = {
-                quantum_mastery : Number(student[0].progress?.quantumMastery),
-                ecology_mastery : Number(student[0].progress?.ecologyMastery),
-                momentum_mastery : Number(student[0].progress?.momentumMastery),
-                tera_mastery : Number(student[0].progress?.teraMastery)
+                quantum_mastery : Number(student.progress?.quantumMastery),
+                ecology_mastery : Number(student.progress?.ecologyMastery),
+                momentum_mastery : Number(student.progress?.momentumMastery),
+                tera_mastery : Number(student.progress?.teraMastery)
             }
 
             return data

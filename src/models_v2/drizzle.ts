@@ -50,12 +50,30 @@ export const getStudentInfo = async (studentId : number) => {
     return query
 }
 
-export const getStudent = async (username : string) => {
-    const query = await db.select()
-                    .from(schema.Student)
-                    .where(eq(schema.Student.username, username))
+export const getStudent = async (userId : number) => {
+    const student = await db.query.Student.findFirst({
+        where : eq(schema.Student.id, userId),
+        with : {
+            section : {
+                columns : {
+                    id : false
+                }
+            },
+            progress : {
+                columns : {
+                    id : false
+                }
+            },
+            score : {
+                columns : {
+                    id : false
+                }
+            }
+        }
 
-    return query[0]
+    })
+
+    return student
 }
 
 export const getTeacher = async (username : string) => {

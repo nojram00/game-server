@@ -1,5 +1,6 @@
 
 import SectionModel from "@main/models/sections";
+import { getSectionStudents } from "@main/models_v2/drizzle";
 import { Student, Teacher } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -10,14 +11,17 @@ interface Params{
 export async function GET(req: NextRequest, {params} : { params : Params }) {
     const sectionId = params.userId
 
-    const data = await SectionModel.find(sectionId)
+    const data = await getSectionStudents(Number(sectionId))
 
-    return NextResponse.json(
-        {
-            message: `Getting students list from section id: ${sectionId}`,
-            data : data?.getData()
-        }
-    )
+    if(data)
+    {
+        return NextResponse.json(
+            {
+                message: `Getting students list from section id: ${sectionId}`,
+                data : data
+            }
+        )
+    }
 }
 
 interface RequestBody {
