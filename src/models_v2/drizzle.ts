@@ -2,175 +2,91 @@ import { drizzle } from 'drizzle-orm/vercel-postgres';
 
 import { sql } from "@vercel/postgres";
 
-import {
-
-    integer,
-    pgTable,
-
-    serial,
-
-    text,
-
-    timestamp,
-
-    uniqueIndex,
-
-    boolean
-
-  } from 'drizzle-orm/pg-core';
 import { and, eq, ne, relations } from 'drizzle-orm';
 
+import * as schema from './schema';
 
-export const db = drizzle(sql);
-
-// Models
-
-export const Student = pgTable(
-    'students',
-    {
-        id : serial('id').primaryKey(),
-        name : text('name').notNull(),
-        username : text('username').notNull().unique('username'),
-        password : text('password').notNull(),
-        section : integer('section_id').references(() => Section.id),
-        score : integer('score_id').references(() => Score.id),
-        progress : integer('progress_id').references(() => Progress.id)
-   }
-)
-
-export const Score = pgTable(
-    'scores',
-    {
-        id : serial('id').primaryKey(),
-        postTest : integer('post_test'),
-        preTest : integer('pre_test')
-    }
-)
-
-export const Progress = pgTable(
-    'progress',
-    {
-        id : serial('id').primaryKey(),
-        quantumMastery : integer("quantum_mastery"),
-        ecologyMastery : integer('ecology_mastery'),
-        momentumMastery : integer('momentum_mastery'),
-        teraMastery : integer('tera_mastery')
-    }
-)
-
-export const Section = pgTable(
-    'sections',
-    {
-        id : serial('id').primaryKey(),
-        sectionName : text('section_name').notNull(),
-        teacherId : integer('teacher_id').references(() => Teacher.id)
-   }
-)
-
-export const Teacher = pgTable(
-    'teachers',
-    {
-        id : serial('id').primaryKey(),
-        name : text('name').notNull(),
-        username : text('username').notNull(),
-        password : text('password').notNull(),
-        isAdmin : boolean('is_admin').default(false)
-    }
-)
-
-// Relations
-
-export const sectionRelations = relations(Section, ({ many, one }) => ({
-    users : many(Student),
-    teacher : one(Teacher)
-}))
-
-export const studentRelations = relations(Student, ({ one }) => ({
-    section : one(Section),
-    score : one(Score),
-    progress : one(Progress)
-}))
-
+export const db = drizzle(sql ,{ schema });
 
 // Operations
 
-export type StudentType = typeof Student.$inferInsert
+export type StudentType = typeof schema.Student.$inferInsert
 
 export const insertStudent = async (student : StudentType) => {
-    return db.insert(Student).values(student).returning()
+    return db.insert(schema.Student).values(student).returning()
 }
 
 export const getStudents = async () => {
-    const query = db.select().from(Student)
+    const query = db.select().from(schema.Student)
 
     return await query.execute()
 }
 
 export const getStudentsWithScores = async () => {
     const query = db.select()
-                    .from(Student)
-                    .leftJoin(Score, eq(Score.id, Student.score))
-                    .where(ne(Student.score, 0))
+                    .from(schema.Student)
+                    .leftJoin(schema.Score, eq(schema.Score.id, schema.Student.score))
+                    .where(ne(schema.Student.score, 0))
 
     return query
 }
 
 export const getStudentWithProgress = async () => {
     const query = await db.select()
-                            .from(Student)
-                            .where(ne(Student.progress, 0))
-                            .leftJoin(Progress, eq(Progress.id, Student.progress))
+                            .from(schema.Student)
+                            .where(ne(schema.Student.progress, 0))
+                            .leftJoin(schema.Progress, eq(schema.Progress.id, schema.Student.progress))
 
     return query
 }
 
 export const getStudentInfo = async (studentId : number) => {
     const query = await db.select()
-                            .from(Student)
-                            .where(eq(Student.id, studentId))
-                            .leftJoin(Progress, eq(Progress.id, Student.progress))
-                            .leftJoin(Score, eq(Score.id, Student.score))
+                            .from(schema.Student)
+                            .where(eq(schema.Student.id, studentId))
+                            .leftJoin(schema.Progress, eq(schema.Progress.id, schema.Student.progress))
+                            .leftJoin(schema.Score, eq(schema.Score.id, schema.Student.score))
 
     return query
 }
 
 export const getStudent = async (username : string) => {
     const query = await db.select()
-                    .from(Student)
-                    .where(eq(Student.username, username))
+                    .from(schema.Student)
+                    .where(eq(schema.Student.username, username))
 
     return query[0]
 }
 
 export const getTeacher = async (username : string) => {
     const query = db.select()
-                    .from(Teacher)
+                    .from(schema.Teacher)
                     .where(and(
-                            eq(Teacher.username, username),
+                            eq(schema.Teacher.username, username),
                         ))
     return await query.execute()
 }
 
 export const getTeacherById = async (id : number | string) => {
     const query = await db.select()
-                        .from(Teacher)
-                        .where(eq(Teacher.id, Number(id)))
+                        .from(schema.Teacher)
+                        .where(eq(schema.Teacher.id, Number(id)))
 
     return query[0]
 }
 
 export const getTeachers = async () => {
     const query = await db.select()
-                    .from(Teacher)
-                    .where(eq(Teacher.isAdmin, false))
+                    .from(schema.Teacher)
+                    .where(eq(schema.Teacher.isAdmin, false))
 
     return query
 }
 
 export const changePassword = async (new_password: string, password : string) => {
-    const query = await db.update(Teacher)
+    const query = await db.update(schema.Teacher)
                     .set({ password : new_password })
-                    .where(eq(Teacher.password, password))
+                    .where(eq(schema.Teacher.password, password))
                     .returning()
 
     return query
@@ -178,34 +94,34 @@ export const changePassword = async (new_password: string, password : string) =>
 
 export const getAdmin = async (username : string, password : string) => {
     const query = await db.select()
-                    .from(Teacher)
+                    .from(schema.Teacher)
                     .where(and(
-                            eq(Teacher.username, username),
-                            eq(Teacher.password, password),
-                            eq(Teacher.isAdmin, true)
+                            eq(schema.Teacher.username, username),
+                            eq(schema.Teacher.password, password),
+                            eq(schema.Teacher.isAdmin, true)
                         ))
     return query
 }
 
 
 
-export const insertSection = async (section : typeof Section.$inferInsert) => {
-    return db.insert(Section).values(section).returning()
+export const insertSection = async (section : typeof schema.Section.$inferInsert) => {
+    return db.insert(schema.Section).values(section).returning()
 }
 
 export const getSections = async () => {
-    const query = await db.select().from(Section)
+    const query = await db.select().from(schema.Section)
 
     return query
 }
 
 
 export const getSection = async (id : number) => {
-    const section = db.select().from(Section).where(eq(Section.id, id)).as('section')
-    const query = await db.select().from(Student)
-                            .innerJoin(section, eq(section.id, Student.section))
-                            .leftJoin(Score, eq(Score.id, Student.score))
-                            .leftJoin(Progress, eq(Progress.id, Student.progress))
+    const section = db.select().from(schema.Section).where(eq(schema.Section.id, id)).as('section')
+    const query = await db.select().from(schema.Student)
+                            .innerJoin(section, eq(section.id, schema.Student.section))
+                            .leftJoin(schema.Score, eq(schema.Score.id, schema.Student.score))
+                            .leftJoin(schema.Progress, eq(schema.Progress.id, schema.Student.progress))
                             .execute()
 
     return query
@@ -213,32 +129,31 @@ export const getSection = async (id : number) => {
 
 export const getSectionStudents = async(id : number) => {
     const section = db.select()
-                        .from(Section)
-                        .where(eq(Section.id, id))
+                        .from(schema.Section)
+                        .where(eq(schema.Section.id, id))
                         .as('section')
 
-    const query = await db.select().from(Student)
-                            .innerJoin(section, eq(section.id, Student.section))
-                            .leftJoin(Score, eq(Score.id, Student.score))
-                            .leftJoin(Progress, eq(Progress.id, Student.progress))
+    const query = await db.select().from(schema.Student)
+                            .innerJoin(section, eq(section.id, schema.Student.section))
+                            .leftJoin(schema.Score, eq(schema.Score.id, schema.Student.score))
+                            .leftJoin(schema.Progress, eq(schema.Progress.id, schema.Student.progress))
                             .execute()
    return query
 }
 
-export const createTeacher = async (newTeacher : typeof Teacher.$inferInsert, section_id : number | null) => {
+export const createTeacher = async (newTeacher : typeof schema.Teacher.$inferInsert, section_id : number | null) => {
 
-    const teacher = await db.select().from(Teacher).where(eq(Teacher.username, newTeacher.username))
+    const teacher = await db.select().from(schema.Teacher).where(eq(schema.Teacher.username, newTeacher.username))
 
     if (teacher.length > 0){
         throw new Error(`Teacher ${newTeacher.username} already exists!`);
     }
-
-    const query = await db.insert(Teacher).values(newTeacher).returning()
+    const query = await db.insert(schema.Teacher).values(newTeacher).returning()
 
     if (section_id || section_id !== 0 || !isNaN(section_id)){
-        const update_section = await db.update(Section)
+        const update_section = await db.update(schema.Section)
                                     .set({ teacherId : query[0].id })
-                                    .where(eq(Section.id, section_id as number))
+                                    .where(eq(schema.Section.id, section_id as number))
     }
 
     return query
@@ -247,13 +162,13 @@ export const createTeacher = async (newTeacher : typeof Teacher.$inferInsert, se
 export const createSection = async (teacherId : number | null, section_name : string) => {
     return await db.transaction( async (tx) => {
 
-        const query = await tx.insert(Section).values({ sectionName : section_name }).returning()
+        const query = await tx.insert(schema.Section).values({ sectionName : section_name }).returning()
 
         if(teacherId || teacherId !== 0){
 
-            const result = await tx.select().from(Teacher).where(eq(Teacher.id, (teacherId as number))).execute()
+            const result = await tx.select().from(schema.Teacher).where(eq(schema.Teacher.id, (teacherId as number))).execute()
 
-            const updated = await tx.update(Section).set({ teacherId : query[0].id }).where(eq(Section.id, query[0].id))
+            const updated = await tx.update(schema.Section).set({ teacherId : query[0].id }).where(eq(schema.Section.id, query[0].id))
         }
 
         return query
@@ -262,33 +177,33 @@ export const createSection = async (teacherId : number | null, section_name : st
 
 export const addStudentFromSection = async (secId : number, studentId : number) => {
     return db.transaction( async (tx) => {
-        const section = await tx.select().from(Section).where(eq(Section.id, secId)).execute()
+        const section = await tx.select().from(schema.Section).where(eq(schema.Section.id, secId)).execute()
 
-        return await tx.update(Student).set({ section : section[0].id }).where(eq(Student.id, studentId))
+        return await tx.update(schema.Student).set({ section : section[0].id }).where(eq(schema.Student.id, studentId))
     })
 }
 
 
-export const createProgress = async (newProgress : typeof Progress.$inferInsert, studentId : number) => {
-    const progress = await db.insert(Progress).values(newProgress).returning()
+export const createProgress = async (newProgress : typeof schema.Progress.$inferInsert, studentId : number) => {
+    const progress = await db.insert(schema.Progress).values(newProgress).returning()
 
-    const student = await db.update(Student).set({ progress : progress[0].id }).where(eq(Student.id, studentId)).returning()
+    const student = await db.update(schema.Student).set({ progress : progress[0].id }).where(eq(schema.Student.id, studentId)).returning()
 
     return student[0]
 }
 
 export const getProgress = async(studentId : number) => {
     const query = await db.select({
-                            name : Student.name,
-                            username : Student.username,
-                            quantumMastery : Progress.quantumMastery,
-                            ecologyMastery : Progress.ecologyMastery,
-                            momentumMastery : Progress.momentumMastery,
-                            teraMastery : Progress.teraMastery,
-                            section : Section.sectionName
-                        }).from(Student)
-                        .leftJoin(Progress, eq(Student.progress, Progress.id))
-                        .leftJoin(Section, eq(Section.id, Student.section))
-                        .where(eq(Student.id, studentId))
+                            name : schema.Student.name,
+                            username : schema.Student.username,
+                            quantumMastery : schema.Progress.quantumMastery,
+                            ecologyMastery : schema.Progress.ecologyMastery,
+                            momentumMastery : schema.Progress.momentumMastery,
+                            teraMastery : schema.Progress.teraMastery,
+                            section : schema.Section.sectionName
+                        }).from(schema.Student)
+                        .leftJoin(schema.Progress, eq(schema.Student.progress, schema.Progress.id))
+                        .leftJoin(schema.Section, eq(schema.Section.id, schema.Student.section))
+                        .where(eq(schema.Student.id, studentId))
     return query[0]
 }
