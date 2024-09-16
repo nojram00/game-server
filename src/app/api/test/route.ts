@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { realtimeDb } from "@config/firebase.config";
-import { ref, set, onValue, push } from "firebase/database";
-import { randomInt } from "crypto";
-import { db, getTeacher, Teacher } from "@main/models_v2/drizzle";
+import { db, getTeacher } from "@main/models_v2/drizzle";
+import { Teacher } from "@main/models_v2/schema";
 import { comparePass, hashPassword } from "@main/libs/PasswordGenerator";
 
 export async function GET(request : NextRequest){
