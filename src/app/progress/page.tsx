@@ -1,9 +1,7 @@
 import Navbar from '@main/components/navbar'
 import Main from '@main/components/progress/Main'
 import Sidebar from '@main/components/sidebar'
-import StudentModel from '@main/models/student'
 import { getStudentWithProgress } from '@main/models_v2/drizzle'
-import { Student } from '@main/types/types'
 import React from 'react'
 
 export default async function progress() {

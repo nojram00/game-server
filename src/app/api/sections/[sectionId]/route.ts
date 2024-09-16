@@ -1,5 +1,3 @@
-
-import SectionModel from "@main/models/sections";
 import { getSectionData } from "@main/models_v2/drizzle";
 import { Student, Teacher } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";

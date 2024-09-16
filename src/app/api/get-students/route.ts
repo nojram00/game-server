@@ -1,6 +1,4 @@
-import StudentModel from "@main/models/student";
 import { db } from "@main/models_v2/drizzle";
-// import { Student } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 

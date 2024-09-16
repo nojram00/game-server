@@ -1,6 +1,4 @@
-import StudentModel from "@main/models/student";
 import { createProgress, getProgress } from "@main/models_v2/drizzle";
-import { Progress } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req : NextRequest, { params } : { params : { studentId : string }}) {

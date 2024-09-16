@@ -1,9 +1,6 @@
 import { hashPassword } from "@main/libs/PasswordGenerator";
 import { generateToken } from "@main/libs/Session";
-import StudentModel from "@main/models/student";
 import { db, insertStudent, StudentType } from "@main/models_v2/drizzle";
-import { Student } from "@main/models_v2/schema";
-// import { Student } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req : NextRequest) {

@@ -1,9 +1,7 @@
 import Navbar from '@main/components/navbar'
 import Main from '@main/components/scores/Main'
 import Sidebar from '@main/components/sidebar'
-import Table from '@main/components/table'
-import StudentModel from '@main/models/student'
-import { getStudents, getStudentsWithScores, Student } from '@main/models_v2/drizzle'
+import { getStudents, getStudentsWithScores } from '@main/models_v2/drizzle'
 import React from 'react'
 
 export default async function scores() {
