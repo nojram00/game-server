@@ -1,3 +1,4 @@
+import BackButton from '@main/components/backButton'
 import Navbar from '@main/components/navbar'
 import Sidebar from '@main/components/sidebar'
 import Main from '@main/components/student-profile/Main'
@@ -69,12 +70,13 @@ export default async function studentProfile({params} : {params : {id : string}}
 
     return (
     <div className='flex flex-col'>
-        <Navbar headerName='Student Profile'/>
+        <Navbar headerName={ `Student Profile - ${student?.name}`}/>
         <div className='flex flex-row'>
             <div>
                 <Sidebar />
             </div>
             <div className='w-full p-5'>
+                <BackButton />
                 <Main score={score_data} progress={progress_data}/>
             </div>
         </div>

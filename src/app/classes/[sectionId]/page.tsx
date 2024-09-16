@@ -2,6 +2,7 @@ import Navbar from "@main/components/navbar"
 import Sidebar from "@main/components/sidebar"
 import { getSection, getSectionData } from "@main/models_v2/drizzle"
 import TableData from "./tableData"
+import BackButton from "@main/components/backButton"
 
 interface Params{
     sectionId : number
@@ -32,6 +33,9 @@ export default async function ClassInfo({ params } : { params : Params }) {
             </div>
 
             <div className='w-full overflow-x-auto'>
+                <div className="m-3">
+                    <BackButton />
+                </div>
                 { students.length > 0 ? (
                     <table className="table ">
                         <thead>
