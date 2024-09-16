@@ -145,11 +145,8 @@ export const getSection = async (id : number) => {
     return query
 }
 
-export const getSectionStudents = async(id : number) => {
+export const getSectionData = async(id : number) => {
     const result = await db.query.Section.findFirst({
-        columns : {
-            id : false
-        },
         where: eq(schema.Section.id, id),
         with : {
             students : {

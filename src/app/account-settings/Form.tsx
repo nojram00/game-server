@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 import Textbox from './Textbox'
-import { Teacher } from '@main/models_v2/drizzle'
 import { changeInfo } from '@main/actions'
 
 export default function Form(props : any) {

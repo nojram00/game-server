@@ -15,7 +15,7 @@ export async function POST(req : NextRequest) {
             const token = await generateToken({
                 username : result.username,
                 id : result.id,
-                section : result.section
+                section : result.section?.sectionName
             })
 
             return NextResponse.json({

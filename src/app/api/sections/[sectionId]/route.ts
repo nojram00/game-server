@@ -1,17 +1,17 @@
 
 import SectionModel from "@main/models/sections";
-import { getSectionStudents } from "@main/models_v2/drizzle";
+import { getSectionData } from "@main/models_v2/drizzle";
 import { Student, Teacher } from "@main/types/types";
 import { NextRequest, NextResponse } from "next/server";
 
 interface Params{
-    userId : string,
+   sectionId : string,
 }
 
 export async function GET(req: NextRequest, {params} : { params : Params }) {
-    const sectionId = params.userId
+    const sectionId = params.sectionId
 
-    const data = await getSectionStudents(Number(sectionId))
+    const data = await getSectionData(Number(sectionId))
 
     if(data)
     {

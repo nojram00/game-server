@@ -1,12 +1,13 @@
 import Navbar from "@main/components/navbar"
 import Sidebar from "@main/components/sidebar"
-import { getSection, getSectionStudents } from "@main/models_v2/drizzle"
+import { getSection, getSectionData } from "@main/models_v2/drizzle"
+import TableData from "./tableData"
 
 interface Params{
     sectionId : number
 }
 export default async function ClassInfo({ params } : { params : Params }) {
-    const section = await getSectionStudents(params.sectionId)
+    const section = await getSectionData(params.sectionId)
 
     const headers = [
         'Name',
@@ -20,7 +21,6 @@ export default async function ClassInfo({ params } : { params : Params }) {
     ]
 
     const students = (typeof section?.students !== 'undefined' ? section?.students : [])
-
 
     return(
         <div className='flex flex-col'>
@@ -43,19 +43,7 @@ export default async function ClassInfo({ params } : { params : Params }) {
                         </thead>
                         <tbody>
                             {students.map((data, i) => (
-                                <tr key={i} className="text-xl">
-                                    <td>
-                                        { data.name}
-                                    </td>
-                                    <td>{ data.username }</td>
-                                    <td>{ data.score?.preTest || 0 }</td>
-                                    <td>{ data.score?.postTest || 0}</td>
-                                    <td>{ data.progress?.quantumMastery }</td>
-                                    <td>{ data.progress?.ecologyMastery }</td>
-                                    <td>{ data.progress?.momentumMastery }</td>
-                                    <td>{ data.progress?.teraMastery }</td>
-
-                                </tr>
+                                <TableData key={i} data={data}/>
                             ))}
                         </tbody>
                     </table>
