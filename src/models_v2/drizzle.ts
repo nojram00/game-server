@@ -128,17 +128,29 @@ export const getSection = async (id : number) => {
 }
 
 export const getSectionStudents = async(id : number) => {
-    const section = db.select()
-                        .from(schema.Section)
-                        .where(eq(schema.Section.id, id))
-                        .as('section')
-
-    const query = await db.select().from(schema.Student)
-                            .innerJoin(section, eq(section.id, schema.Student.section))
-                            .leftJoin(schema.Score, eq(schema.Score.id, schema.Student.score))
-                            .leftJoin(schema.Progress, eq(schema.Progress.id, schema.Student.progress))
-                            .execute()
-   return query
+    const result = await db.query.Section.findFirst({
+        columns : {
+            id : false
+        },
+        where: eq(schema.Section.id, id),
+        with : {
+            students : {
+                with : {
+                    score : {
+                        columns : {
+                            id: false
+                        }
+                    },
+                    progress : {
+                        columns : {
+                            id : false
+                        }
+                    }
+                }
+            }
+        }
+    })
+   return result
 }
 
 export const createTeacher = async (newTeacher : typeof schema.Teacher.$inferInsert, section_id : number | null) => {

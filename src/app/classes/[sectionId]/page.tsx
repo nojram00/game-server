@@ -19,12 +19,12 @@ export default async function ClassInfo({ params } : { params : Params }) {
         'Tera Mastery'
     ]
 
-    const sectionInfo = (section.length > 0 ? section[0].section : null)
+    const students = (typeof section?.students !== 'undefined' ? section?.students : [])
 
 
     return(
         <div className='flex flex-col'>
-            <Navbar headerName={`Section - ${sectionInfo?.sectionName}`}/>
+            <Navbar headerName={`Section - ${section?.sectionName}`}/>
 
             <div className='flex flex-row'>
             <div>
@@ -32,7 +32,7 @@ export default async function ClassInfo({ params } : { params : Params }) {
             </div>
 
             <div className='w-full overflow-x-auto'>
-                { section.length > 0 ? (
+                { students.length > 0 ? (
                     <table className="table ">
                         <thead>
                             <tr className="text-xl">
@@ -42,11 +42,19 @@ export default async function ClassInfo({ params } : { params : Params }) {
                             </tr>
                         </thead>
                         <tbody>
-                            {section.map((data, i) => (
-                                <tr key={i}>
+                            {students.map((data, i) => (
+                                <tr key={i} className="text-xl">
                                     <td>
-
+                                        { data.name}
                                     </td>
+                                    <td>{ data.username }</td>
+                                    <td>{ data.score?.preTest || 0 }</td>
+                                    <td>{ data.score?.postTest || 0}</td>
+                                    <td>{ data.progress?.quantumMastery }</td>
+                                    <td>{ data.progress?.ecologyMastery }</td>
+                                    <td>{ data.progress?.momentumMastery }</td>
+                                    <td>{ data.progress?.teraMastery }</td>
+
                                 </tr>
                             ))}
                         </tbody>
