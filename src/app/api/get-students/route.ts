@@ -17,7 +17,7 @@ export async function GET(req : NextRequest) {
     catch(err)
     {
         return NextResponse.json({
-            message : `Error: ${err}`
+            message : `Error: ${err.message}`
         }, {status : 500})
     }
 }
