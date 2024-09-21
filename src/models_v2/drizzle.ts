@@ -257,9 +257,14 @@ export const updateStudentScore = async(studentId : number, newScore : typeof sc
     {
         const score = await db.insert(schema.Score).values(newScore).returning()
 
-        const student = await db.update(schema.Student).set({ score : score[0].id }).returning()
+        if(typeof student !== 'undefined'){
+            const st = await db.update(schema.Student).set({ score : score[0].id }).where(eq(schema.Student.id, student.id)).returning()
 
-        return student[0]
+            return st[0]
+        }
+
     }
+
+    return null
 
 }
