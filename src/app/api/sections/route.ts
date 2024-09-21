@@ -6,14 +6,10 @@ export async function GET(){
     const sections = await getSections()
 
     if(sections){
-        return NextResponse.json({
-            data : sections
-        })
+        return NextResponse.json(sections)
     }
 
-    return NextResponse.json({
-        data: []
-    })
+    return NextResponse.json([])
 
 }
 
