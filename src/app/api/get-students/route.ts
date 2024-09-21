@@ -40,9 +40,7 @@ export async function GET(req : NextRequest) {
 
         if (students){
 
-            return NextResponse.json({
-                data : students
-            }, { status : 200 })
+            return NextResponse.json(students, { status : 200 })
         }
 
     }
