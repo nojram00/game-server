@@ -121,7 +121,8 @@ export const getSections = async () => {
         with : {
             teacher : {
                 columns : {
-                    password : false
+                    password : false,
+                    isAdmin : false
                 }
             }
         }
