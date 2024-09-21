@@ -253,7 +253,13 @@ export const updateStudentScore = async(studentId : number, newScore : typeof sc
             }
         })
     }
+    else
+    {
+        const score = await db.insert(schema.Score).values(newScore).returning()
 
-    return student
+        const student = await db.update(schema.Student).set({ score : score[0].id }).returning()
+
+        return student[0]
+    }
 
 }
