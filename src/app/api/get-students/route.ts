@@ -6,7 +6,7 @@ export async function GET(req : NextRequest) {
     try
     {
         // const students = await StudentModel.getAll()
-        const students = getStudents()
+        const students = await getStudents()
 
         if (students){
 
