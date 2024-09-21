@@ -23,11 +23,7 @@ export const getStudents = async () => {
             password : false
         },
         with : {
-            score : {
-                columns : {
-                    id : false
-                }
-            },
+            score : true,
             progress : {
                 columns : {
                     id : false
