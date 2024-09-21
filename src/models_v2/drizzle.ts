@@ -247,7 +247,7 @@ export const updateStudentScore = async(studentId : number, newScore : typeof sc
         const res = await db.update(schema.Score).set(newScore).where(eq(schema.Score.id, Number(student?.score.id))).returning()
 
         return await db.query.Student.findFirst({
-            where : eq(schema.Student.id, res[0].id),
+            where : eq(schema.Student.score, res[0].id),
             with : {
                 score : true
             }
