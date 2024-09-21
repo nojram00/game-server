@@ -1,30 +1,26 @@
-import StudentModel from "@main/models/student"
-import { Score } from "@main/types/types"
+import { updateStudentScore } from "@main/models_v2/drizzle"
 import { NextRequest, NextResponse } from "next/server"
 
 interface Params {
     studentId : string
 }
-export async function PATCH(req : NextRequest, {params} : { params : Params }) {
-    const studentId = params.studentId
+export async function POST(req : NextRequest, {params} : { params : Params }) {
+    const studentId = Number(params.studentId)
 
-    const requestBody = await req.json() as Score
+    const { postTest, preTest } = await req.json()
 
-    const data = await StudentModel.find(params.studentId)
+    const data = await updateStudentScore(studentId, {
+        postTest : postTest,
+        preTest : preTest
+    })
 
-
-    // console.log(data?.student)
     if (data){
-        const res = await data.updateScore(requestBody)
 
-        // console.log(res) // null
+        return NextResponse.json({
+            message : "Score Updated!",
+            data : data
+        })
 
-        if (res){
-            return NextResponse.json({
-                message : "Score Updated!",
-                data : res
-            })
-        }
     }
 
 

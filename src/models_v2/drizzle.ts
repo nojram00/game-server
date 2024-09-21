@@ -5,6 +5,7 @@ import { sql } from "@vercel/postgres";
 import { and, eq, ne, relations } from 'drizzle-orm';
 
 import * as schema from './schema';
+import { query } from 'firebase/database';
 
 export const db = drizzle(sql ,{ schema });
 
@@ -231,4 +232,28 @@ export const getProgress = async(studentId : number) => {
                         .leftJoin(schema.Section, eq(schema.Section.id, schema.Student.section))
                         .where(eq(schema.Student.id, studentId))
     return query[0]
+}
+
+export const updateStudentScore = async(studentId : number, newScore : typeof schema.Score.$inferInsert) => {
+    const student = await db.query.Student.findFirst({
+        where : eq(schema.Student.id, studentId),
+        with : {
+            score : true
+        }
+    })
+
+    if(student?.score){
+
+        const res = await db.update(schema.Score).set(newScore).where(eq(schema.Score.id, Number(student?.score.id))).returning()
+
+        return await db.query.Student.findFirst({
+            where : eq(schema.Student.id, res[0].id),
+            with : {
+                score : true
+            }
+        })
+    }
+
+    return student
+
 }
