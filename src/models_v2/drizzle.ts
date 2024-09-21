@@ -18,9 +18,39 @@ export const insertStudent = async (student : StudentType) => {
 }
 
 export const getStudents = async () => {
-    const query = db.select().from(schema.Student)
+    const students = await db.query.Student.findMany({
+        columns : {
+            password : false
+        },
+        with : {
+            score : {
+                columns : {
+                    id : false
+                }
+            },
+            progress : {
+                columns : {
+                    id : false
+                }
+            },
+            section : {
+                columns : {
+                    id : false,
+                    teacherId : false,
+                },
+                with : {
+                    teacher : {
+                        columns : {
+                            name: true,
+                            username : true
+                        }
+                    }
+                }
+            }
+        }
+    });
 
-    return await query.execute()
+    return students
 }
 
 export const getStudentsWithScores = async () => {
