@@ -19,6 +19,16 @@ export async function GET(req : NextRequest) {
                         id : false,
                         teacherId : false
                     }
+                },
+                progress : {
+                    columns : {
+                        id : false
+                    }
+                },
+                score : {
+                    columns : {
+                        id : false
+                    }
                 }
             },
             limit : pageSize,
