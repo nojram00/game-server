@@ -6,7 +6,19 @@ export async function GET(req : NextRequest) {
     try
     {
         // const students = await StudentModel.getAll()
-        const students = await getStudents()
+        const students = await db.query.Student.findMany({
+            columns : {
+                password : false
+            },
+            with : {
+                section : {
+                    columns : {
+                        id : false,
+                        teacherId : false
+                    }
+                }
+            }
+        })
 
         if (students){
 

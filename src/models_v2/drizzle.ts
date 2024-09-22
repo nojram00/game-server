@@ -73,6 +73,14 @@ export const getStudent = async (userId : number) => {
             section : {
                 columns : {
                     id : false
+                },
+                with : {
+                    teacher : {
+                        columns : {
+                            id : false,
+                            password : false
+                        }
+                    }
                 }
             },
             progress : {
