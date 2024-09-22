@@ -3,9 +3,12 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(req : NextRequest) {
+    const page = req.nextUrl.searchParams.get('page') as string ?? "1"
     try
     {
         // const students = await StudentModel.getAll()
+        const pageSize = 5
+
         const students = await db.query.Student.findMany({
             columns : {
                 password : false
@@ -17,7 +20,9 @@ export async function GET(req : NextRequest) {
                         teacherId : false
                     }
                 }
-            }
+            },
+            limit : pageSize,
+            offset : ((Number(page) - 1) * pageSize)
         })
 
         if (students){
