@@ -17,7 +17,7 @@ export async function POST(req : NextRequest, { params } : { params : { studentI
 
     if (student) {
 
-        const updated_progress = {
+        var updated_progress = {
             qm : student.progress?.quantumMastery,
             em : student.progress?.ecologyMastery,
             tm : student.progress?.teraMastery,

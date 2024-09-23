@@ -12,48 +12,46 @@ export async function POST(req : NextRequest, {params} : { params : Params }) {
 
     const { postTest, preTest } = await req.json()
 
-    let data;
-
     const student = await db.query.Student.findFirst({
-        where : eq(Student.id, Number(studentId))
+        where : eq(Student.id, Number(studentId)),
+        with : {
+            score : true
+        }
     });
 
-    // update postest only:
-    if(preTest === null || preTest === undefined){
-        const d = await db.update(Score)
-                            .set({ postTest : Number(postTest) })
-                            .where(eq(Score.id, Number(student?.score)))
+    if(student){
+
+        var updated_score = { pr : student?.score?.preTest, pt : student?.score?.postTest }
+        // update postest only:
+        if(preTest === null && preTest === undefined){
+
+            updated_score.pr = preTest
+        }
+        // update pretest only:
+        else if (postTest === null && postTest === undefined)
+        {
+            updated_score.pt = postTest
+        }
+
+
+        const data = await db.update(Score)
+                            .set({
+                                preTest : updated_score.pr,
+                                postTest : updated_score.pt
+                            })
+                            .where(eq(Score.id, Number(student?.score?.id)))
                             .returning();
+        if (data.length > 0){
 
-        data = d[0];
-    }
-    // update pretest only:
-    else if (postTest === null || postTest === undefined)
-    {
-        const d = await db.update(Score)
-                            .set({ preTest : Number(preTest) })
-                            .where(eq(Score.id, Number(student?.score)))
-                            .returning();
-        data = d[0];
-    }
-    // update all
-    else
-    {
-        data = await updateStudentScore(studentId, {
-            postTest : postTest,
-            preTest : preTest
-        })
+            return NextResponse.json({
+                    message : "Score Updated!",
+                    data : data
+            })
+
+        }
     }
 
 
-    if (data){
-
-        return NextResponse.json({
-            message : "Score Updated!",
-            data : data
-        })
-
-    }
 
 
     return NextResponse.json({
