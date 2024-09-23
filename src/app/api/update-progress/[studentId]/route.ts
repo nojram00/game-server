@@ -15,7 +15,29 @@ export async function POST(req : NextRequest, { params } : { params : { studentI
         }
     });
 
+
     if (student) {
+
+        if(student?.progress === null){
+            const new_progress = await db.insert(Progress)
+                                        .values({
+                                            quantumMastery : (quantum_mastery !== null && quantum_mastery !== undefined ? quantum_mastery : 0),
+                                            teraMastery : (tera_mastery !== null && tera_mastery !== undefined ? tera_mastery : 0),
+                                            momentumMastery : (momentum_mastery !== null && momentum_mastery !== undefined ? momentum_mastery : 0),
+                                            ecologyMastery : (ecology_mastery !== null && ecology_mastery !== undefined ? ecology_mastery : 0)
+                                        }).returning();
+            const inserted = await db.update(Student)
+                                        .set({ progress : new_progress[0].id })
+                                        .where(eq(Student.id, student.id))
+                                        .returning();
+
+            if(inserted.length > 0){
+                return NextResponse.json({
+                    message : "Student Mastery Updated!",
+                    data : await getProgress(inserted[0].id)
+                    }, { status : 200 })
+                }
+        }
 
         var updated_progress = {
             qm : student.progress?.quantumMastery,
