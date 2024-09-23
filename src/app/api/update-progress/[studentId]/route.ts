@@ -50,7 +50,7 @@ export async function POST(req : NextRequest, { params } : { params : { studentI
             updated_progress.qm = quantum_mastery
         }
 
-        if(momentum_mastery !== null && quantum_mastery !== undefined) {
+        if(momentum_mastery !== null && momentum_mastery !== undefined) {
             updated_progress.mm = momentum_mastery
         }
 
