@@ -49,22 +49,38 @@ export const getStudents = async () => {
     return students
 }
 
-export const getStudentsWithScores = async () => {
-    const query = db.select()
-                    .from(schema.Student)
-                    .leftJoin(schema.Score, eq(schema.Score.id, schema.Student.score))
-                    .where(ne(schema.Student.score, 0))
+export const getStudentsWithScores = async (page : number = 1) => {
+    const pageSize = 12
+    const students = await db.query.Student.findMany({
+        with : {
+            score : {
+                columns : {
+                    id : false
+                }
+            }
+        },
+        limit : pageSize,
+        offset : (pageSize - 1) * page
+    })
 
-    return query
+    return students
 }
 
-export const getStudentWithProgress = async () => {
-    const query = await db.select()
-                            .from(schema.Student)
-                            .where(ne(schema.Student.progress, 0))
-                            .leftJoin(schema.Progress, eq(schema.Progress.id, schema.Student.progress))
+export const getStudentWithProgress = async (page : number = 1) => {
+    const pageSize = 12
+    const students = await db.query.Student.findMany({
+        with : {
+            progress : {
+                columns : {
+                    id : false
+                }
+            }
+        },
+        limit : pageSize,
+        offset : (pageSize -1) * page
+    })
 
-    return query
+    return students
 }
 export const getStudent = async (userId : number) => {
     const student = await db.query.Student.findFirst({

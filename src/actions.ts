@@ -20,7 +20,7 @@ export async function signin(formdata: FormData){
         const user = await getTeacher((username as string))
 
         // await setSession(user[0])
-        console.log(comparePass(password as string, user[0].password))
+        console.log(`Compared : ${comparePass(password as string, user[0].password)}`)
         console.log(user[0])
         if (comparePass(password as string, user[0].password)) {
                await setSession(user[0])
@@ -29,7 +29,7 @@ export async function signin(formdata: FormData){
 
         }
         catch(err){
-            console.error(err)
+            // console.error(err.message)
             revalidatePath('/')
         }
 

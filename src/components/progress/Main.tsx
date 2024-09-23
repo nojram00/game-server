@@ -3,7 +3,7 @@ import React from 'react'
 
 interface Props{
     header_row : Array<any>
-    data_row : Array<ProgressData>
+    data_row : Array<any>
 }
 
 interface ProgressData{
@@ -37,16 +37,16 @@ export default function Main(props : Props) {
                         {data.username}
                     </td>
                     <td className='text-2xl'>
-                        {data.quantum_mastery}
+                        {data.progress?.quantum_mastery ?? 0}
                     </td>
                     <td className='text-2xl'>
-                        {data.ecology_mastery}
+                        {data.progress?.ecology_mastery ?? 0}
                     </td>
                     <td className='text-2xl'>
-                        {data.momentum_mastery}
+                        {data.progress?.momentum_mastery ?? 0}
                     </td>
                     <td className='text-2xl'>
-                        {data.tera_mastery}
+                        {data.progress?.tera_mastery ?? 0}
                     </td>
 
                 </tr>

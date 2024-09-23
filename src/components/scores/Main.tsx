@@ -2,11 +2,12 @@
 import React from 'react'
 import Table from '../table'
 import Link from 'next/link';
+import { StudentType } from '@main/models_v2/drizzle';
 
 
 interface Props{
     header_row : Array<any>
-    data_row : Array<ScoreData>
+    data_row : Array<any | object>
 }
 
 interface ScoreData{
@@ -39,10 +40,10 @@ export default function Main(props : Props) {
                         <Link href={`/student-profile/${data.id}`}>{data.username}</Link>
                     </td >
                     <td className='text-2xl'>
-                        {data.pre_test}
+                        {data.score?.preTest ?? 0}
                     </td>
                     <td className='text-2xl'>
-                        {data.post_test}
+                        {data.score?.postTest ?? 0}
                     </td>
                 </tr>
             ))}
