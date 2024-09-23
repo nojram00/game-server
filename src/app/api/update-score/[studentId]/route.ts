@@ -45,11 +45,10 @@ export async function POST(req : NextRequest, {params} : { params : Params }) {
         var updated_score = { pr : student?.score?.preTest, pt : student?.score?.postTest }
         // update postest only:
         if(preTest !== null && preTest !== undefined){
-
             updated_score.pr = preTest
         }
         // update pretest only:
-        else if (postTest !== null && postTest !== undefined)
+        if (postTest !== null && postTest !== undefined)
         {
             updated_score.pt = postTest
         }
