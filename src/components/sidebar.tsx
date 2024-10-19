@@ -1,6 +1,7 @@
 import { getSession, isAdmin } from '@main/libs/Session'
 import Link from 'next/link'
 import React from 'react'
+import Image from 'next/image'
 
 export default async function Sidebar() {
 
@@ -8,7 +9,8 @@ export default async function Sidebar() {
   const navs = [
     {
         name: "Dashboard",
-        link : "/dashboard"
+        link : "/dashboard",
+        icon_src : "/icons/dashboard.png"
     },
     {
         name: "Scores",
@@ -57,6 +59,7 @@ export default async function Sidebar() {
             {/* Sidebar content here */}
             { navs.map((item, id) => (
                 <li key={id} className=''>
+                    <Image src={typeof item.icon_src === 'string' ? item.icon_src : ''} alt="The Shit" />
                     <Link href={item.link} className='p-3'>{item.name}</Link>
                 </li>
             ))}
