@@ -14,19 +14,23 @@ export default async function Sidebar() {
     },
     {
         name: "Scores",
-        link: "/scores"
+        link: "/scores",
+        icon_src : "/icons/score.png"
     },
     {
         name : "Progress",
-        link : "/progress"
+        link : "/progress",
+        icon_src : "/icons/growth.png"
     },
     {
         name : "Classes",
-        link: "/classes"
+        link: "/classes",
+        icon_src : "/icons/class.png"
     },
     {
         name : "Account Settings",
-        link : "/account-settings"
+        link : "/account-settings",
+        icon_src : "/icons/settings.png"
     }
 ]
 
@@ -34,7 +38,8 @@ export default async function Sidebar() {
     const admin_navs = [
         {
             name : "Add Teacher",
-            link : "/add-teacher"
+            link : "/add-teacher",
+            icon_src : "/icons/profile.png"
         }
     ]
 
@@ -55,12 +60,15 @@ export default async function Sidebar() {
         </div>
         <div className="drawer-side">
             <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label>
-            <ul className="menu bg-base-200 text-base-content min-h-full w-80 p-4 gap-5">
+            <ul className="menu bg-base-200 text-base-content min-h-full w-56 p-4 gap-5">
             {/* Sidebar content here */}
             { navs.map((item, id) => (
                 <li key={id} className=''>
-                    <Image src={typeof item.icon_src === 'string' ? item.icon_src : ''} alt="The Shit" />
-                    <Link href={item.link} className='p-3'>{item.name}</Link>
+                    
+                    <Link href={item.link} className='p-3'>
+                        <Image src={typeof item.icon_src === 'string' ? item.icon_src : ''} width={50} height={50} alt={item.name + "-icon"} />
+                        {item.name}
+                    </Link>
                 </li>
             ))}
             </ul>
